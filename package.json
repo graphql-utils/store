@@ -1,0 +1,63 @@
+{
+  "name": "@graphql-utils/store",
+  "version": "1.0.0",
+  "description": "In-memory data store for writing stateful GraphQL mocks.",
+  "author": "Mohammad Ataei",
+  "license": "MIT",
+  "keywords": [
+    "graphql",
+    "graphql-store",
+    "graphql-mock"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql-utils/store/"
+  },
+  "bugs": {
+    "url": "https://github.com/graphql-utils/store/issues"
+  },
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "test": "vitest --ui --open=false",
+    "coverage": "vitest run --coverage",
+    "format": "prettier --write . && pnpm lint --fix",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
+    "prepare": "husky install",
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": "eslint --fix",
+    "*.{js,jsx,ts,tsx,md,html,css}": "prettier --write"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "@vitest/coverage-c8": "^0.23.4",
+    "@vitest/ui": "^0.23.4",
+    "eslint": "^8.24.0",
+    "eslint-config-prettier": "^8.5.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "prettier": "2.7.1",
+    "typescript": "^4.8.4",
+    "unbuild": "^0.8.11",
+    "vite": "^3.1.4",
+    "vitest": "^0.23.4"
+  }
+}
