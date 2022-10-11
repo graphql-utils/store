@@ -4,3 +4,5 @@ node_modules
 dist
 .idea
 coverage
+
+tests/fixtures/schema.types.ts
