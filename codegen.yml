@@ -1,0 +1,6 @@
+overwrite: true
+schema: 'tests/fixtures/schema.graphql'
+generates:
+  tests/fixtures/schema.types.ts:
+    plugins:
+      - 'typescript'

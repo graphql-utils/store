@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ESNext",
     "module": "ESNext",
-    "lib": ["esnext", "dom"],
-    "types": ["vitest/globals", "vitest/importMeta"],
+    "lib": ["esnext"],
+    "types": ["vitest/globals", "vitest/importMeta", "./global"],
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "isolatedModules": true,
@@ -15,6 +15,6 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true
   },
-  "include": ["src"],
+  "include": ["src", "tests"],
   "exclude": ["node_modules", "dist"]
 }

@@ -16,7 +16,6 @@
   "bugs": {
     "url": "https://github.com/graphql-utils/store/issues"
   },
-  "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -37,21 +36,33 @@
     "format": "prettier --write . && pnpm lint --fix",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "prepare": "husky install",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "codegen": "graphql-codegen",
+    "postinstall": "pnpm codegen"
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": "eslint --fix",
     "*.{js,jsx,ts,tsx,md,html,css}": "prettier --write"
   },
+  "peerDependencies": {
+    "graphql": "^16.6.0"
+  },
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
+    "@graphql-codegen/cli": "2.13.5",
+    "@graphql-codegen/typescript": "2.7.3",
+    "@ngneat/falso": "^6.1.0",
+    "@rollup/plugin-graphql": "^2.0.0",
+    "@types/node": "^18.8.3",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
     "@vitest/coverage-c8": "^0.23.4",
     "@vitest/ui": "^0.23.4",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
+    "graphql": "^16.6.0",
+    "graphql-tag": "^2.12.6",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "2.7.1",
@@ -59,5 +70,8 @@
     "unbuild": "^0.8.11",
     "vite": "^3.1.4",
     "vitest": "^0.23.4"
+  },
+  "dependencies": {
+    "nanoid": "^4.0.0"
   }
 }
