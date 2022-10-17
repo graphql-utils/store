@@ -7,3 +7,5 @@ export type Document<DocumentType> = DocumentType & {
   [DOCUMENT_KEY]: string
   [DOCUMENT_TYPE]: string
 }
+
+export type PredicateFunction<T> = (data: T) => boolean

@@ -1,5 +1,5 @@
 import { GraphQLSchema } from 'graphql'
-import { Schema } from './types'
+import { PredicateFunction, Schema } from './types'
 import { CollectionStorage } from './CollectionStorage'
 import { resolveGraphQLSchema } from './resolveGraphQLSchema'
 import { createDocument } from './createDocument'
@@ -25,8 +25,11 @@ export class Store<TypesMap extends Record<string, any>> {
     return this.collections.get(type).create(document)
   }
 
-  findFirstOrThrow<Type extends keyof TypesMap>(type: Type): TypesMap[Type] {
-    const document = this.collections.get(type).find()
+  findFirstOrThrow<Type extends keyof TypesMap>(
+    type: Type,
+    predicate?: PredicateFunction<TypesMap[Type]>,
+  ): TypesMap[Type] {
+    const document = this.collections.get(type).findFirst(predicate)
 
     if (!document) {
       throw new Error('Document not found.')
