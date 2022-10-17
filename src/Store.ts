@@ -1,9 +1,8 @@
 import { GraphQLSchema } from 'graphql'
 import { Schema } from './types'
 import { CollectionStorage } from './CollectionStorage'
-import { nanoid } from 'nanoid'
 import { resolveGraphQLSchema } from './resolveGraphQLSchema'
-import { DOCUMENT_KEY_SYMBOL } from './constants'
+import { createDocument } from './createDocument'
 
 interface StoreConfiguration {
   schema: Schema
@@ -22,30 +21,8 @@ export class Store<TypesMap extends Record<string, any>> {
     type: Type,
     data: TypesMap[Type],
   ): TypesMap[Type] {
-    const documentKey = generateDocumentKey()
-    const document = structuredClone(data)
-
-    Object.defineProperty(document, DOCUMENT_KEY_SYMBOL, {
-      enumerable: false,
-      configurable: false,
-      writable: false,
-      value: documentKey,
-    })
-
-    return this.collections.get(type).create(
-      documentKey,
-      new Proxy(document, {
-        get(target: TypesMap[Type], prop: string | symbol): any {
-          if (Reflect.has(document, prop) || typeof prop !== 'string') {
-            return Reflect.get(document, prop)
-          }
-        },
-
-        set() {
-          throw new Error('Documents are immutable.')
-        },
-      }),
-    )
+    const document = createDocument(type as string, data)
+    return this.collections.get(type).create(document)
   }
 
   findFirstOrThrow<Type extends keyof TypesMap>(type: Type): TypesMap[Type] {
@@ -61,8 +38,4 @@ export class Store<TypesMap extends Record<string, any>> {
   reset(): void {
     this.collections = new CollectionStorage<TypesMap>(this.schema)
   }
-}
-
-function generateDocumentKey() {
-  return nanoid(16)
 }

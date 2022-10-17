@@ -1,3 +1,6 @@
+import { Document } from './types'
+import { DOCUMENT_KEY } from './constants'
+
 export class DocumentCollection<DocumentType> {
   private documents
 
@@ -5,10 +8,9 @@ export class DocumentCollection<DocumentType> {
     this.documents = new Map<string, DocumentType>()
   }
 
-  create(key: string, data: DocumentType) {
-    this.documents.set(key, data)
-
-    return data
+  create(document: Document<DocumentType>) {
+    this.documents.set(document[DOCUMENT_KEY], document)
+    return document
   }
 
   find(): DocumentType | undefined {
