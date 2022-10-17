@@ -1,4 +1,4 @@
-import { Document } from './types'
+import { Document, PredicateFunction } from './types'
 import { DOCUMENT_KEY } from './constants'
 
 export class DocumentCollection<DocumentType> {
@@ -13,7 +13,17 @@ export class DocumentCollection<DocumentType> {
     return document
   }
 
-  find(): DocumentType | undefined {
+  findFirst(
+    predicate?: PredicateFunction<DocumentType>,
+  ): DocumentType | undefined {
+    if (predicate) {
+      for (const document of this.documents.values()) {
+        if (predicate(document)) {
+          return document
+        }
+      }
+    }
+
     return this.documents.values().next().value
   }
 }
