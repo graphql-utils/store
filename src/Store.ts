@@ -38,6 +38,13 @@ export class Store<TypesMap extends Record<string, any>> {
     return document
   }
 
+  find<Type extends keyof TypesMap>(
+    type: Type,
+    predicate?: PredicateFunction<TypesMap[Type]>,
+  ): Array<TypesMap[Type]> {
+    return this.collections.get(type).find(predicate)
+  }
+
   reset(): void {
     this.collections = new CollectionStorage<TypesMap>(this.schema)
   }

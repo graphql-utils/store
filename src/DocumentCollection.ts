@@ -26,4 +26,14 @@ export class DocumentCollection<DocumentType> {
 
     return this.documents.values().next().value
   }
+
+  find(predicate?: PredicateFunction<DocumentType>): Array<DocumentType> {
+    const documents = [...this.documents.values()]
+
+    if (predicate) {
+      return documents.filter(predicate)
+    }
+
+    return documents
+  }
 }
