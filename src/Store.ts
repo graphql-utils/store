@@ -25,11 +25,18 @@ export class Store<TypesMap extends Record<string, any>> {
     return this.collections.get(type).create(document)
   }
 
+  findFirst<Type extends keyof TypesMap>(
+    type: Type,
+    predicate?: PredicateFunction<TypesMap[Type]>,
+  ): TypesMap[Type] | undefined {
+    return this.collections.get(type).findFirst(predicate)
+  }
+
   findFirstOrThrow<Type extends keyof TypesMap>(
     type: Type,
     predicate?: PredicateFunction<TypesMap[Type]>,
   ): TypesMap[Type] {
-    const document = this.collections.get(type).findFirst(predicate)
+    const document = this.findFirst(type, predicate)
 
     if (!document) {
       throw new Error('Document not found.')
