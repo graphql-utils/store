@@ -5,8 +5,8 @@ import { nanoid } from 'nanoid'
 export function createDocument<DocumentType extends Record<string, unknown>>(
   type: string,
   data: DocumentType,
+  documentKey: string = generateDocumentKey(),
 ): Document<DocumentType> {
-  const documentKey = generateDocumentKey()
   const document = structuredClone(data)
 
   Reflect.defineProperty(document, DOCUMENT_KEY, {

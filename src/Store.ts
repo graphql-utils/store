@@ -3,6 +3,7 @@ import { PredicateFunction, Schema } from './types'
 import { CollectionStorage } from './CollectionStorage'
 import { resolveGraphQLSchema } from './resolveGraphQLSchema'
 import { createDocument } from './createDocument'
+import { getDocumentKey, getDocumentType, isDocument } from './utils'
 
 interface StoreConfiguration {
   schema: Schema
@@ -23,6 +24,28 @@ export class Store<TypesMap extends Record<string, any>> {
   ): TypesMap[Type] {
     const document = createDocument(type as string, data)
     return this.collections.get(type).create(document)
+  }
+
+  update<Type extends TypesMap[keyof TypesMap]>(
+    document: Type,
+    data: Partial<Type>,
+  ): Type {
+    if (!isDocument(document)) {
+      throw new Error('Input document is not a valid document.')
+    }
+
+    const type = getDocumentType(document)
+    const key = getDocumentKey(document)
+
+    return this.collections
+      .get(type)
+      .create(
+        createDocument<TypesMap[string]>(
+          type,
+          { ...document, ...data } as TypesMap[string],
+          key,
+        ),
+      )
   }
 
   findFirst<Type extends keyof TypesMap>(
