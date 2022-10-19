@@ -1,9 +1,9 @@
 import { Store } from '../src'
 import { schema, TypesMap } from './fixtures'
 import { postFactory, userFactory } from './utils/factories'
-import { DOCUMENT_KEY, DOCUMENT_TYPE } from '../src/constants'
 import { Document } from '../src/types'
 import { Post, User } from './fixtures/schema.types'
+import { getDocumentKey, getDocumentType } from '../src/utils'
 
 const store = new Store<TypesMap>({
   schema,
@@ -21,13 +21,13 @@ it('can create and store a new entity ', () => {
 it('should store document meta data on created entity', () => {
   const user = store.create('User', userFactory()) as Document<User>
 
-  expect(user[DOCUMENT_KEY]).toEqual(expect.any(String))
-  expect(user[DOCUMENT_TYPE]).toEqual('User')
+  expect(getDocumentKey(user)).toEqual(expect.any(String))
+  expect(getDocumentType(user)).toEqual('User')
 
   const post = store.create('Post', postFactory()) as Document<Post>
 
-  expect(post[DOCUMENT_KEY]).toEqual(expect.any(String))
-  expect(post[DOCUMENT_TYPE]).toEqual('Post')
+  expect(getDocumentKey(post)).toEqual(expect.any(String))
+  expect(getDocumentType(post)).toEqual('Post')
 })
 
 it('should store document meta data privately', () => {
@@ -49,7 +49,7 @@ it('should store document meta data privately', () => {
   `)
 
   // @ts-expect-error DOCUMENT_KEY_SYMBOL should be hidden from return type
-  expect(user[DOCUMENT_KEY]).toEqual(expect.any(String))
+  expect(getDocumentKey(user)).toEqual(expect.any(String))
   // @ts-expect-error DOCUMENT_KEY_SYMBOL should be hidden from return type
-  expect(user[DOCUMENT_TYPE]).toEqual('User')
+  expect(getDocumentType(user)).toEqual('User')
 })

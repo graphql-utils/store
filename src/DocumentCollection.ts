@@ -1,5 +1,5 @@
 import { Document, PredicateFunction } from './types'
-import { DOCUMENT_KEY } from './constants'
+import { getDocumentKey } from './utils'
 
 export class DocumentCollection<DocumentType> {
   private documents
@@ -9,7 +9,7 @@ export class DocumentCollection<DocumentType> {
   }
 
   create(document: Document<DocumentType>) {
-    this.documents.set(document[DOCUMENT_KEY], document)
+    this.documents.set(getDocumentKey(document), document)
     return document
   }
 
