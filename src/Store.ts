@@ -52,6 +52,10 @@ export class Store<TypesMap extends Record<string, any>> {
     return this.collections.get(type).find(predicate)
   }
 
+  count<Type extends keyof TypesMap>(type: Type): number {
+    return this.collections.get(type).count()
+  }
+
   reset(): void {
     this.collections = new CollectionStorage<TypesMap>(this.schema)
   }

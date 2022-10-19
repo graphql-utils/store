@@ -36,4 +36,8 @@ export class DocumentCollection<DocumentType> {
 
     return documents
   }
+
+  count(): number {
+    return this.documents.size
+  }
 }
