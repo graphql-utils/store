@@ -40,4 +40,8 @@ export class DocumentCollection<DocumentType> {
   count(): number {
     return this.documents.size
   }
+
+  getByKey(documentKey: string) {
+    return this.documents.get(documentKey)
+  }
 }

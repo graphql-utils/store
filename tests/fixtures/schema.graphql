@@ -4,9 +4,17 @@ type Post {
   body: String!
 }
 
+type UserProfile {
+  fullName: String!
+  github: String
+  twitter: String
+  website: String
+}
+
 type User {
   id: ID!
   username: String!
+  profile: UserProfile!
   posts: [Post]!
 }
 

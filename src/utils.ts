@@ -1,4 +1,5 @@
-import { Document } from './types'
+import { nanoid } from 'nanoid'
+import { Document, DocumentRef } from './types'
 import { DOCUMENT_KEY, DOCUMENT_TYPE } from './constants'
 
 export function getDocumentKey<T>(document: Document<T>) {
@@ -15,5 +16,19 @@ export function isDocument(document: unknown): document is Document<unknown> {
     typeof document === 'object' &&
     Reflect.has(document, DOCUMENT_KEY) &&
     Reflect.has(document, DOCUMENT_TYPE)
+  )
+}
+
+export function generateDocumentKey() {
+  return nanoid(16)
+}
+
+export function createDocumentRef(key: string, type: string): DocumentRef {
+  return { $ref: { key, type } }
+}
+
+export function isDocumentRef(input: unknown): input is DocumentRef {
+  return (
+    input !== null && typeof input === 'object' && Reflect.has(input, '$ref')
   )
 }
