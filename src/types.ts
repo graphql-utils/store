@@ -9,3 +9,5 @@ export type Document<DocumentType> = DocumentType & {
 }
 
 export type PredicateFunction<T> = (data: T) => boolean
+
+export type DocumentRef = { $ref: { key: string; type: string } }

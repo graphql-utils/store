@@ -1,5 +1,12 @@
-import { randUuid, randText, randUserName, randParagraph } from '@ngneat/falso'
-import { Post, User } from '../fixtures/schema.types'
+import { Post, User, UserProfile } from '../fixtures'
+import {
+  randUuid,
+  randText,
+  randUserName,
+  randParagraph,
+  randFullName,
+  randUrl,
+} from '@ngneat/falso'
 
 export function postFactory(overrides?: Partial<Post>): Post {
   return {
@@ -14,7 +21,20 @@ export function userFactory(overrides?: Partial<User>): User {
   return {
     id: randUuid(),
     username: randUserName(),
+    profile: userProfileFactory(),
     posts: [],
+    ...overrides,
+  }
+}
+
+export function userProfileFactory(
+  overrides?: Partial<UserProfile>,
+): UserProfile {
+  return {
+    fullName: randFullName(),
+    github: randUserName(),
+    twitter: randUserName(),
+    website: randUrl(),
     ...overrides,
   }
 }

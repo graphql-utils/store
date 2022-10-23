@@ -1,9 +1,9 @@
 import { randUserName } from '@ngneat/falso'
 import { Store } from '../src'
 import { schema, TypesMap } from './fixtures'
-import { userFactory } from './utils/factories'
+import { userFactory, userProfileFactory } from './utils/factories'
 import { Document } from '../src/types'
-import { User } from './fixtures/schema.types'
+import { User } from './fixtures'
 import { getDocumentKey, getDocumentType } from '../src/utils'
 
 const store = new Store<TypesMap>({
@@ -36,7 +36,11 @@ it('should throw error if input document is not valid', () => {
 it('can update document partially', () => {
   const user = store.create('User', userFactory())
 
-  const data: Partial<User> = { username: randUserName() }
+  const data: Partial<User> = {
+    username: randUserName(),
+    profile: userProfileFactory(),
+  }
+
   const updatedUser = store.update(user, data)
 
   expect(updatedUser.username).toEqual(data.username)

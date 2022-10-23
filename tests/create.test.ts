@@ -1,8 +1,7 @@
 import { Store } from '../src'
-import { schema, TypesMap } from './fixtures'
+import { Post, schema, TypesMap, User } from './fixtures'
 import { postFactory, userFactory } from './utils/factories'
 import { Document } from '../src/types'
-import { Post, User } from './fixtures/schema.types'
 import { getDocumentKey, getDocumentType } from '../src/utils'
 
 const store = new Store<TypesMap>({
@@ -11,14 +10,14 @@ const store = new Store<TypesMap>({
 
 afterEach(() => store.reset())
 
-it('can create and store a new entity ', () => {
+it('can create and store a new document', () => {
   const user = userFactory()
   store.create('User', user)
 
   expect(store.findFirstOrThrow('User')).toEqual(user)
 })
 
-it('should store document meta data on created entity', () => {
+it('should store document meta data on created document', () => {
   const user = store.create('User', userFactory()) as Document<User>
 
   expect(getDocumentKey(user)).toEqual(expect.any(String))
@@ -33,8 +32,11 @@ it('should store document meta data on created entity', () => {
 it('should store document meta data privately', () => {
   const data: User = {
     id: '7c280f0a-c1e7-4982-a008-99d9e1bcbea0',
-    username: 'Yhudiyt.Wanjala99',
+    username: 'john.doe',
     posts: [],
+    profile: {
+      fullName: 'John Doe',
+    },
   }
 
   const user = store.create('User', data)
@@ -44,7 +46,10 @@ it('should store document meta data privately', () => {
     {
       "id": "7c280f0a-c1e7-4982-a008-99d9e1bcbea0",
       "posts": [],
-      "username": "Yhudiyt.Wanjala99",
+      "profile": {
+        "fullName": "John Doe",
+      },
+      "username": "john.doe",
     }
   `)
 
@@ -52,4 +57,13 @@ it('should store document meta data privately', () => {
   expect(getDocumentKey(user)).toEqual(expect.any(String))
   // @ts-expect-error DOCUMENT_KEY_SYMBOL should be hidden from return type
   expect(getDocumentType(user)).toEqual('User')
+})
+
+it('can create new document with `one-to-one` `required` relation', () => {
+  const data = userFactory()
+  const user = store.create('User', data)
+
+  expect(user.profile).toEqual(data.profile)
+  expect(store.findFirstOrThrow('User').profile).toEqual(data.profile)
+  expect(store.findFirstOrThrow('UserProfile')).toEqual(user.profile)
 })
