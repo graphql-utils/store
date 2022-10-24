@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import { Document, DocumentRef } from './types'
+import { Document, DocumentRef, DocumentRefCollection } from './types'
 import { DOCUMENT_KEY, DOCUMENT_TYPE } from './constants'
 
 export function getDocumentKey<T>(document: Document<T>) {
@@ -30,5 +30,13 @@ export function createDocumentRef(key: string, type: string): DocumentRef {
 export function isDocumentRef(input: unknown): input is DocumentRef {
   return (
     input !== null && typeof input === 'object' && Reflect.has(input, '$ref')
+  )
+}
+
+export function isDocumentRefCollection(
+  input: unknown,
+): input is DocumentRefCollection {
+  return (
+    input !== null && typeof input === 'object' && Reflect.has(input, '$refs')
   )
 }

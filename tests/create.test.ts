@@ -3,6 +3,7 @@ import { Post, schema, TypesMap, User } from './fixtures'
 import { postFactory, userFactory } from './utils/factories'
 import { Document } from '../src/types'
 import { getDocumentKey, getDocumentType } from '../src/utils'
+import { toCollection } from './utils'
 
 const store = new Store<TypesMap>({
   schema,
@@ -66,4 +67,15 @@ it('can create new document with `one-to-one` `required` relation', () => {
   expect(user.profile).toEqual(data.profile)
   expect(store.findFirstOrThrow('User').profile).toEqual(data.profile)
   expect(store.findFirstOrThrow('UserProfile')).toEqual(user.profile)
+})
+
+it('can create new document with `one-to-many` relation', () => {
+  const data = userFactory({ posts: toCollection(postFactory, 3) })
+  const user = store.create('User', data)
+
+  expect(user.posts).toEqual(data.posts)
+  expect(store.findFirstOrThrow('User').posts).toEqual(data.posts)
+
+  expect(store.count('Post')).toEqual(3)
+  expect(store.find('Post')).toEqual(user.posts)
 })
