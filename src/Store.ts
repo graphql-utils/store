@@ -9,6 +9,7 @@ import {
   getDocumentType,
   isDocument,
   isDocumentRef,
+  isDocumentRefCollection,
 } from './utils'
 import { DOCUMENT_KEY, DOCUMENT_TYPE } from './constants'
 
@@ -114,7 +115,18 @@ export class Store<TypesMap extends Record<string, any>> {
 
     this.storage.relations(type).forEach(({ field, type }) => {
       if (Array.isArray(document[field])) {
-        // TODO Implement one-to-many relation
+        Object.defineProperty(document, field, {
+          value: {
+            $refs: document[field].map((item: TypesMap[string]) => {
+              const targetDocument = this.create(type, item)
+              return createDocumentRef(
+                getDocumentKey(targetDocument),
+                getDocumentType(targetDocument),
+              )
+            }),
+          },
+        })
+
         return
       }
 
@@ -130,6 +142,12 @@ export class Store<TypesMap extends Record<string, any>> {
     return new Proxy(document, {
       get: (target, prop) => {
         const data = Reflect.get(document, prop)
+
+        if (isDocumentRefCollection(data)) {
+          return data.$refs.map(({ $ref: { key, type } }) => {
+            return this.storage.collection(type).getByKey(key)
+          })
+        }
 
         if (isDocumentRef(data)) {
           return this.storage.collection(data.$ref.type).getByKey(data.$ref.key)
