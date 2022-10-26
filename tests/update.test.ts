@@ -4,7 +4,7 @@ import { schema, TypesMap } from './fixtures'
 import { userFactory, userProfileFactory } from './utils/factories'
 import { Document } from '../src/types'
 import { User } from './fixtures'
-import { getDocumentKey, getDocumentType } from '../src/utils'
+import { getDocumentKey, getDocumentType } from '../src/document'
 
 const store = new Store<TypesMap>({
   schema,

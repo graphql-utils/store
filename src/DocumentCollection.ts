@@ -1,5 +1,5 @@
 import { Document, PredicateFunction } from './types'
-import { getDocumentKey } from './utils'
+import { getDocumentKey } from './document'
 
 export class DocumentCollection<DocumentType> {
   private documents
