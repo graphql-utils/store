@@ -3,15 +3,19 @@ import { Document, PredicateFunction, Schema } from './types'
 import { CollectionStorage } from './CollectionStorage'
 import { resolveGraphQLSchema } from './resolveGraphQLSchema'
 import {
-  createDocumentRef,
+  DOCUMENT_KEY,
+  DOCUMENT_TYPE,
+  DocumentRef,
+  DocumentRefCollection,
+  documentsToRefCollection,
+  documentToRef,
   generateDocumentKey,
   getDocumentKey,
   getDocumentType,
   isDocument,
   isDocumentRef,
   isDocumentRefCollection,
-} from './utils'
-import { DOCUMENT_KEY, DOCUMENT_TYPE } from './constants'
+} from './document'
 
 interface StoreConfiguration {
   schema: Schema
@@ -45,16 +49,13 @@ export class Store<TypesMap extends Record<string, any>> {
 
     const type = getDocumentType(document)
     const key = getDocumentKey(document)
+    const newDocument = this.createDocument(
+      type,
+      { ...document, ...data } as TypesMap[string],
+      key,
+    )
 
-    return this.storage
-      .collection(type)
-      .create(
-        this.createDocument(
-          type,
-          { ...document, ...data } as TypesMap[string],
-          key,
-        ),
-      )
+    return this.storage.collection(type).create(newDocument)
   }
 
   findFirst<Type extends keyof TypesMap>(
@@ -115,42 +116,30 @@ export class Store<TypesMap extends Record<string, any>> {
 
     this.storage.relations(type).forEach(({ field, type }) => {
       if (Array.isArray(document[field])) {
-        Object.defineProperty(document, field, {
-          value: {
-            $refs: document[field].map((item: TypesMap[string]) => {
-              const targetDocument = this.create(type, item)
-              return createDocumentRef(
-                getDocumentKey(targetDocument),
-                getDocumentType(targetDocument),
-              )
-            }),
-          },
+        return Object.defineProperty(document, field, {
+          value: documentsToRefCollection(
+            document[field].map((item: TypesMap[string]) =>
+              this.create(type, item),
+            ),
+          ),
         })
-
-        return
       }
 
-      const targetDocument = this.create(type, document[field])
-      Object.defineProperty(document, field, {
-        value: createDocumentRef(
-          getDocumentKey(targetDocument),
-          getDocumentType(targetDocument),
-        ),
+      return Object.defineProperty(document, field, {
+        value: documentToRef(this.create(type, document[field])),
       })
     })
 
     return new Proxy(document, {
       get: (target, prop) => {
-        const data = Reflect.get(document, prop)
+        const field = Reflect.get(document, prop)
 
-        if (isDocumentRefCollection(data)) {
-          return data.$refs.map(({ $ref: { key, type } }) => {
-            return this.storage.collection(type).getByKey(key)
-          })
+        if (isDocumentRefCollection(field)) {
+          return this.resolveDocumentsFromRefCollection(field)
         }
 
-        if (isDocumentRef(data)) {
-          return this.storage.collection(data.$ref.type).getByKey(data.$ref.key)
+        if (isDocumentRef(field)) {
+          return this.resolveDocumentFromRef(field)
         }
 
         if (Reflect.has(document, prop) || typeof prop !== 'string') {
@@ -162,5 +151,15 @@ export class Store<TypesMap extends Record<string, any>> {
         throw new Error('Documents are immutable.')
       },
     })
+  }
+
+  protected resolveDocumentsFromRefCollection(
+    collection: DocumentRefCollection,
+  ) {
+    return collection.refs.map((ref) => this.resolveDocumentFromRef(ref))
+  }
+
+  protected resolveDocumentFromRef(ref: DocumentRef) {
+    return this.storage.collection(ref.type).getByKey(ref.key)
   }
 }

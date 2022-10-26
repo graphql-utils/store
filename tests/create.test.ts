@@ -2,7 +2,7 @@ import { Store } from '../src'
 import { Post, schema, TypesMap, User } from './fixtures'
 import { postFactory, userFactory } from './utils/factories'
 import { Document } from '../src/types'
-import { getDocumentKey, getDocumentType } from '../src/utils'
+import { getDocumentKey, getDocumentType } from '../src/document'
 import { toCollection } from './utils'
 
 const store = new Store<TypesMap>({
