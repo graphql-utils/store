@@ -1,50 +1,37 @@
 import {
+  buildASTSchema,
+  buildSchema,
   getNamedType,
   GraphQLField,
   GraphQLNamedType,
   GraphQLObjectType,
   GraphQLSchema,
   isObjectType,
+  isSchema,
+  Kind,
 } from 'graphql'
+import { Relation, Schema } from './types'
 import { DocumentCollection } from './DocumentCollection'
 
-export type Relation = { field: string; type: string }
-
-export class CollectionStorage<TypesMap extends Record<string, any>> {
-  private readonly collections
-  private readonly _relations
-
-  constructor(schema: GraphQLSchema) {
-    const schemaObjectTypes = resolveSchemaObjectTypes(schema)
-
-    this.collections = initializeCollections<TypesMap>(schemaObjectTypes)
-    this._relations = resolveSchemaRelations<TypesMap>(schemaObjectTypes)
+export function resolveGraphQLSchema(schema: Schema): GraphQLSchema {
+  if (isSchema(schema)) {
+    return schema
   }
 
-  collection<Type extends keyof TypesMap>(
-    type: Type,
-  ): DocumentCollection<TypesMap[Type]> {
-    const collection = this.collections.get(type)
-
-    if (!collection) {
-      throw new Error('Integrity Failed.')
-    }
-
-    return collection as DocumentCollection<TypesMap[Type]>
+  if (typeof schema === 'object' && schema.kind === Kind.DOCUMENT) {
+    return buildASTSchema(schema)
   }
 
-  relations<Type extends keyof TypesMap>(type: Type): Array<Relation> {
-    const relations = this._relations.get(type)
-
-    if (!relations) {
-      throw new Error('Integrity Failed.')
-    }
-
-    return relations
+  if (typeof schema === 'string') {
+    return buildSchema(schema)
   }
+
+  throw new Error('[@graphql-utils/store] Error: Invalid schema provided.')
 }
 
-function resolveSchemaObjectTypes(schema: GraphQLSchema): GraphQLObjectType[] {
+export function resolveSchemaObjectTypes(
+  schema: GraphQLSchema,
+): GraphQLObjectType[] {
   return Object.values(schema.getTypeMap()).filter(isNonRootObjectType)
 }
 
@@ -64,7 +51,7 @@ function isInternalTypeName(typeName: string) {
   return typeName.startsWith('__')
 }
 
-function resolveSchemaRelations<
+export function resolveSchemaRelations<
   TypesMap extends Record<string, any>,
   TypeName extends keyof TypesMap = keyof TypesMap,
 >(schemaTypes: Array<GraphQLObjectType>): Map<TypeName, Array<Relation>> {
@@ -75,7 +62,7 @@ function resolveSchemaRelations<
   )
 }
 
-function resolveTypeRelations(type: GraphQLObjectType): Array<Relation> {
+export function resolveTypeRelations(type: GraphQLObjectType): Array<Relation> {
   const typeFields = type.getFields()
 
   return Object.values(typeFields).reduce<Array<Relation>>((acc, field) => {
@@ -94,7 +81,7 @@ function isRelationField(field: GraphQLField<unknown, unknown>) {
   return getNamedType(field.type) instanceof GraphQLObjectType
 }
 
-function initializeCollections<
+export function initializeCollections<
   TypesMap extends Record<string, any>,
   TypeName extends keyof TypesMap = keyof TypesMap,
 >(

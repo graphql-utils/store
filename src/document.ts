@@ -12,6 +12,27 @@ export class DocumentRefCollection {
   constructor(public refs: Array<DocumentRef>) {}
 }
 
+export function dataToDocument<T>(
+  data: T,
+  documentType: string,
+  documentKey?: string,
+): Document<T> {
+  return Object.defineProperties(data, {
+    [DOCUMENT_KEY]: {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+      value: documentKey || generateDocumentKey(),
+    },
+    [DOCUMENT_TYPE]: {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+      value: documentType,
+    },
+  }) as Document<T>
+}
+
 export function getDocumentKey<T>(document: Document<T>) {
   return document[DOCUMENT_KEY]
 }
