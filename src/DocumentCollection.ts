@@ -8,7 +8,7 @@ export class DocumentCollection<DocumentType> {
     this.documents = new Map<string, DocumentType>()
   }
 
-  create(document: Document<DocumentType>) {
+  add(document: Document<DocumentType>) {
     this.documents.set(getDocumentKey(document), document)
     return document
   }

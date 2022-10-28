@@ -17,7 +17,7 @@ export abstract class Operations<TypesMap extends Record<string, any>> {
     type: Type,
     data: TypesMap[Type],
   ): TypesMap[Type] {
-    return this.collection(type).create(this.createDocument(type, data))
+    return this.collection(type).add(this.createDocument(type, data))
   }
 
   update<Type extends TypesMap[keyof TypesMap]>(
@@ -35,7 +35,7 @@ export abstract class Operations<TypesMap extends Record<string, any>> {
       getDocumentKey(document),
     )
 
-    return this.collection(type).create(newDocument)
+    return this.collection(type).add(newDocument)
   }
 
   findFirst<Type extends keyof TypesMap>(
