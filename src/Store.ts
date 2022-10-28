@@ -1,96 +1,72 @@
 import { GraphQLSchema } from 'graphql'
-import { Document, PredicateFunction, Schema } from './types'
-import { CollectionStorage } from './CollectionStorage'
-import { resolveGraphQLSchema } from './resolveGraphQLSchema'
+import { Document, Relation, Schema } from './types'
 import {
-  DOCUMENT_KEY,
-  DOCUMENT_TYPE,
+  initializeCollections,
+  resolveGraphQLSchema,
+  resolveSchemaObjectTypes,
+  resolveSchemaRelations,
+} from './schema'
+import {
   DocumentRef,
   DocumentRefCollection,
   documentsToRefCollection,
   documentToRef,
-  generateDocumentKey,
-  getDocumentKey,
-  getDocumentType,
-  isDocument,
   isDocumentRef,
   isDocumentRefCollection,
+  dataToDocument,
 } from './document'
+import { Operations } from './Operations'
+import { DocumentCollection } from './DocumentCollection'
 
 interface StoreConfiguration {
   schema: Schema
 }
 
-export class Store<TypesMap extends Record<string, any>> {
-  protected storage
+export class Store<
+  TypesMap extends Record<string, any>,
+> extends Operations<TypesMap> {
+  private _collections
+  private _relations
+
   protected schema: GraphQLSchema
 
   constructor(config: StoreConfiguration) {
+    super()
+
     this.schema = resolveGraphQLSchema(config.schema)
-    this.storage = new CollectionStorage<TypesMap>(this.schema)
+    const schemaObjectTypes = resolveSchemaObjectTypes(this.schema)
+
+    this._collections = initializeCollections<TypesMap>(schemaObjectTypes)
+    this._relations = resolveSchemaRelations<TypesMap>(schemaObjectTypes)
   }
 
-  create<Type extends keyof TypesMap>(
+  protected collection<Type extends keyof TypesMap>(
     type: Type,
-    data: TypesMap[Type],
-  ): TypesMap[Type] {
-    const document = this.createDocument(type, data)
+  ): DocumentCollection<TypesMap[Type]> {
+    const collection = this._collections.get(type)
 
-    return this.storage.collection(type).create(document)
-  }
-
-  update<Type extends TypesMap[keyof TypesMap]>(
-    document: Type,
-    data: Partial<Type>,
-  ): Type {
-    if (!isDocument(document)) {
-      throw new Error('Input document is not a valid document.')
+    if (!collection) {
+      throw new Error('Integrity Failed.')
     }
 
-    const type = getDocumentType(document)
-    const key = getDocumentKey(document)
-    const newDocument = this.createDocument(
-      type,
-      { ...document, ...data } as TypesMap[string],
-      key,
-    )
-
-    return this.storage.collection(type).create(newDocument)
+    return collection as DocumentCollection<TypesMap[Type]>
   }
 
-  findFirst<Type extends keyof TypesMap>(
+  protected relations<Type extends keyof TypesMap>(
     type: Type,
-    predicate?: PredicateFunction<TypesMap[Type]>,
-  ): TypesMap[Type] | undefined {
-    return this.storage.collection(type).findFirst(predicate)
-  }
+  ): Array<Relation> {
+    const relations = this._relations.get(type)
 
-  findFirstOrThrow<Type extends keyof TypesMap>(
-    type: Type,
-    predicate?: PredicateFunction<TypesMap[Type]>,
-  ): TypesMap[Type] {
-    const document = this.findFirst(type, predicate)
-
-    if (!document) {
-      throw new Error('Document not found.')
+    if (!relations) {
+      throw new Error('Integrity Failed.')
     }
 
-    return document
-  }
-
-  find<Type extends keyof TypesMap>(
-    type: Type,
-    predicate?: PredicateFunction<TypesMap[Type]>,
-  ): Array<TypesMap[Type]> {
-    return this.storage.collection(type).find(predicate)
-  }
-
-  count<Type extends keyof TypesMap>(type: Type): number {
-    return this.storage.collection(type).count()
+    return relations
   }
 
   reset(): void {
-    this.storage = new CollectionStorage<TypesMap>(this.schema)
+    const schemaObjectTypes = resolveSchemaObjectTypes(this.schema)
+    this._collections = initializeCollections<TypesMap>(schemaObjectTypes)
   }
 
   protected createDocument<Type extends keyof TypesMap>(
@@ -98,23 +74,13 @@ export class Store<TypesMap extends Record<string, any>> {
     data: TypesMap[Type],
     documentKey?: string,
   ): Document<TypesMap[Type]> {
-    const document = structuredClone(data)
+    const document = dataToDocument(
+      structuredClone(data),
+      type as string,
+      documentKey,
+    )
 
-    Reflect.defineProperty(document, DOCUMENT_KEY, {
-      enumerable: false,
-      configurable: false,
-      writable: false,
-      value: documentKey || generateDocumentKey(),
-    })
-
-    Reflect.defineProperty(document, DOCUMENT_TYPE, {
-      enumerable: false,
-      configurable: false,
-      writable: false,
-      value: type,
-    })
-
-    this.storage.relations(type).forEach(({ field, type }) => {
+    this.relations(type).forEach(({ field, type }) => {
       if (Array.isArray(document[field])) {
         return Object.defineProperty(document, field, {
           value: documentsToRefCollection(
@@ -160,6 +126,6 @@ export class Store<TypesMap extends Record<string, any>> {
   }
 
   protected resolveDocumentFromRef(ref: DocumentRef) {
-    return this.storage.collection(ref.type).getByKey(ref.key)
+    return this.collection(ref.type).getByKey(ref.key)
   }
 }
