@@ -68,4 +68,8 @@ export abstract class Operations<TypesMap extends Record<string, any>> {
   count<Type extends keyof TypesMap>(type: Type): number {
     return this.collection(type).count()
   }
+
+  clear<Type extends keyof TypesMap>(type: Type) {
+    return this.collection(type).clearDocuments()
+  }
 }
