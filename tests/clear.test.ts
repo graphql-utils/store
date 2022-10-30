@@ -48,7 +48,7 @@ it('should delete multiple documents', () => {
   store.create('User', userFactory()) as Document<User>
   store.create('Post', postFactory()) as Document<Post>
 
-  store.clear(['User', 'Post'])
+  store.clear('User', 'Post')
 
   expect(store.count('User')).toEqual(0)
 
@@ -63,7 +63,7 @@ it('should not delete the relations when clearing multiple documents', () => {
   expect(store.count('User')).toEqual(1)
   expect(store.count('Post')).toEqual(1)
 
-  store.clear(['User', 'Post'])
+  store.clear('User', 'Post')
 
   expect(store.count('User')).toEqual(0)
   expect(store.count('Post')).toEqual(0)
