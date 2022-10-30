@@ -17,22 +17,18 @@ it('can delete an entire document', () => {
 
   store.clear('User')
 
-  expect(() => store.findFirstOrThrow('User')).toThrowError(
-    'Document not found.',
-  )
+  expect(store.count('User')).toEqual(0)
 })
 
-it('should not delete irelevant documents', () => {
+it('should not delete irrelevant documents', () => {
   store.create('User', userFactory()) as Document<User>
-  const post = store.create('Post', postFactory()) as Document<Post>
+  store.create('Post', postFactory()) as Document<Post>
 
   store.clear('User')
 
-  expect(() => store.findFirstOrThrow('User')).toThrowError(
-    'Document not found.',
-  )
+  expect(store.count('User')).toEqual(0)
 
-  expect(store.findFirstOrThrow('Post')).toEqual(post)
+  expect(store.count('Post')).toEqual(1)
 })
 
 it('should not delete the relations', () => {
@@ -43,9 +39,7 @@ it('should not delete the relations', () => {
 
   store.clear('User')
 
-  expect(() => store.findFirstOrThrow('User')).toThrowError(
-    'Document not found.',
-  )
+  expect(store.count('User')).toEqual(0)
 
   expect(store.findFirstOrThrow('UserProfile')).toEqual(user.profile)
 })
