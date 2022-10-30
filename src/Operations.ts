@@ -70,6 +70,6 @@ export abstract class Operations<TypesMap extends Record<string, any>> {
   }
 
   clear<Type extends keyof TypesMap>(type: Type) {
-    return this.collection(type).clearDocuments()
+    return this.collection(type).clear()
   }
 }

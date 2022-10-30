@@ -45,7 +45,7 @@ export class DocumentCollection<DocumentType> {
     return this.documents.get(documentKey)
   }
 
-  clearDocuments() {
+  clear() {
     return this.documents.clear()
   }
 }
