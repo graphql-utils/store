@@ -43,3 +43,30 @@ it('should not delete the relations', () => {
 
   expect(store.findFirstOrThrow('UserProfile')).toEqual(user.profile)
 })
+
+it('should delete multiple documents', () => {
+  store.create('User', userFactory()) as Document<User>
+  store.create('Post', postFactory()) as Document<Post>
+
+  store.clear(['User', 'Post'])
+
+  expect(store.count('User')).toEqual(0)
+
+  expect(store.count('Post')).toEqual(0)
+})
+
+it('should not delete the relations when clearing multiple documents', () => {
+  store.create('Post', postFactory()) as Document<Post>
+  store.create('User', userFactory()) as Document<User>
+
+  expect(store.count('UserProfile')).toEqual(1)
+  expect(store.count('User')).toEqual(1)
+  expect(store.count('Post')).toEqual(1)
+
+  store.clear(['User', 'Post'])
+
+  expect(store.count('User')).toEqual(0)
+  expect(store.count('Post')).toEqual(0)
+
+  expect(store.count('UserProfile')).toEqual(1)
+})
