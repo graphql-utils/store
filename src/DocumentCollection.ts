@@ -44,4 +44,8 @@ export class DocumentCollection<DocumentType> {
   getByKey(documentKey: string) {
     return this.documents.get(documentKey)
   }
+
+  clear() {
+    return this.documents.clear()
+  }
 }
