@@ -69,7 +69,7 @@ export abstract class Operations<TypesMap extends Record<string, any>> {
     return this.collection(type).count()
   }
 
-  clear<Type extends keyof TypesMap>(type: Type) {
-    return this.collection(type).clear()
+  clear(...types: Array<keyof TypesMap>) {
+    types.forEach((type) => this.collection(type).clear())
   }
 }

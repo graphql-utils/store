@@ -1,7 +1,6 @@
 import { Store } from '../src'
-import { Post, schema, TypesMap, User } from './fixtures'
-import { postFactory, userFactory } from './utils/factories'
-import { Document } from '../src/types'
+import { schema, TypesMap } from './fixtures'
+import { postFactory, userFactory, userProfileFactory } from './utils/factories'
 import { toCollection } from './utils'
 
 const store = new Store<TypesMap>({
@@ -46,4 +45,24 @@ it('should not delete relative documents', () => {
 
   expect(store.count('User')).toEqual(0)
   expect(store.count('Post')).toEqual(3)
+})
+
+it('can clear multiple collections', () => {
+  store.create(
+    'User',
+    userFactory({
+      profile: userProfileFactory(),
+      posts: toCollection(postFactory, 3),
+    }),
+  )
+
+  expect(store.count('User')).toEqual(1)
+  expect(store.count('Post')).toEqual(3)
+  expect(store.count('UserProfile')).toEqual(1)
+
+  store.clear('User', 'Post', 'UserProfile')
+
+  expect(store.count('User')).toEqual(0)
+  expect(store.count('Post')).toEqual(0)
+  expect(store.count('UserProfile')).toEqual(0)
 })
