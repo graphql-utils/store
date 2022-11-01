@@ -65,8 +65,9 @@ export class Store<
   }
 
   reset(): void {
-    const schemaObjectTypes = resolveSchemaObjectTypes(this.schema)
-    this._collections = initializeCollections<TypesMap>(schemaObjectTypes)
+    for (const collection of this._collections.values()) {
+      collection.clear()
+    }
   }
 
   protected createDocument<Type extends keyof TypesMap>(
