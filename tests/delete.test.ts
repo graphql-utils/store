@@ -46,6 +46,6 @@ it('should not affect other collections', () => {
 it('should throw error if input document is not valid', () => {
   const data = userFactory()
   expect(() => store.delete(data)).toThrowError(
-    'Input document is not a valid document.',
+    'Cannot delete the document because it is not a valid document.',
   )
 })

@@ -49,7 +49,8 @@ export class DocumentCollection<DocumentType> {
     return this.documents.clear()
   }
 
-  delete(id: string) {
-    return this.documents.delete(id)
+  delete(document: Document<DocumentType>) {
+    const key = getDocumentKey(document)
+    return this.documents.delete(key)
   }
 }
