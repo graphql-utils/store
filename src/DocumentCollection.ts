@@ -50,7 +50,6 @@ export class DocumentCollection<DocumentType> {
   }
 
   delete(document: Document<DocumentType>) {
-    const key = getDocumentKey(document)
-    return this.documents.delete(key)
+    return this.documents.delete(getDocumentKey(document))
   }
 }
