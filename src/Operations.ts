@@ -72,4 +72,16 @@ export abstract class Operations<TypesMap extends Record<string, any>> {
   clear(...types: Array<keyof TypesMap>) {
     types.forEach((type) => this.collection(type).clear())
   }
+
+  delete<Type extends TypesMap[keyof TypesMap]>(document: Type) {
+    if (!isDocument(document)) {
+      throw new Error(
+        'Cannot delete the input because it is not a valid document.',
+      )
+    }
+
+    const type = getDocumentType(document)
+
+    return this.collection(type).delete(document as TypesMap[string])
+  }
 }

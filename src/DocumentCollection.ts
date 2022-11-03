@@ -48,4 +48,8 @@ export class DocumentCollection<DocumentType> {
   clear() {
     return this.documents.clear()
   }
+
+  delete(document: Document<DocumentType>) {
+    return this.documents.delete(getDocumentKey(document))
+  }
 }
