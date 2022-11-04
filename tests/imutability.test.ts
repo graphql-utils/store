@@ -11,14 +11,14 @@ afterEach(() => store.reset())
 
 it('should store immutable documents', () => {
   const user = userFactory()
-  store.create('User', user)
+  store.add('User', user)
   user.username = randUserName()
 
   expect(store.findFirstOrThrow('User')?.username).not.toEqual(user.username)
 })
 
 it('should not be possible to mutate retrieved document', () => {
-  store.create('User', userFactory())
+  store.add('User', userFactory())
 
   const retrieved = store.findFirstOrThrow('User')
 
@@ -28,7 +28,7 @@ it('should not be possible to mutate retrieved document', () => {
 })
 
 it('should store immutable documents when updating an existing document', () => {
-  const user = store.create('User', userFactory())
+  const user = store.add('User', userFactory())
   const data = userFactory()
 
   const updatedUser = store.update(user, data)
@@ -39,7 +39,7 @@ it('should store immutable documents when updating an existing document', () => 
 })
 
 it('should not be possible to mutate updated document', () => {
-  const user = store.create('User', userFactory())
+  const user = store.add('User', userFactory())
   const updatedUser = store.update(user, userFactory())
 
   expect(() => (updatedUser.username = randUserName())).toThrowError(

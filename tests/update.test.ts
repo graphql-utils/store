@@ -13,7 +13,7 @@ const store = new Store<TypesMap>({
 afterEach(() => store.reset())
 
 it('should update an existing document', () => {
-  const user = store.create('User', userFactory()) as Document<User>
+  const user = store.add('User', userFactory()) as Document<User>
   expect(store.findFirstOrThrow('User')).toEqual(user)
 
   const data = userFactory()
@@ -34,7 +34,7 @@ it('should throw error if input document is not valid', () => {
 })
 
 it('can update document partially', () => {
-  const user = store.create('User', userFactory())
+  const user = store.add('User', userFactory())
 
   const data: Partial<User> = {
     username: randUserName(),

@@ -13,7 +13,7 @@ export abstract class Operations<TypesMap extends Record<string, any>> {
     documentKey?: string,
   ): Document<TypesMap[Type]>
 
-  create<Type extends keyof TypesMap>(
+  add<Type extends keyof TypesMap>(
     type: Type,
     data: TypesMap[Type],
   ): TypesMap[Type] {

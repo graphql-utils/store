@@ -10,7 +10,7 @@ const store = new Store<TypesMap>({
 afterEach(() => store.reset())
 
 it('should delete single documents in a collection', () => {
-  toCollection(() => store.create('User', userFactory()), 5)
+  toCollection(() => store.add('User', userFactory()), 5)
   const user = store.findFirstOrThrow('User')
   expect(store.count('User')).toEqual(5)
 
@@ -25,8 +25,8 @@ it('should delete single documents in a collection', () => {
 })
 
 it('should not affect other collections', () => {
-  toCollection(() => store.create('User', userFactory()), 5)
-  toCollection(() => store.create('Post', postFactory()), 5)
+  toCollection(() => store.add('User', userFactory()), 5)
+  toCollection(() => store.add('Post', postFactory()), 5)
   const user = store.findFirstOrThrow('User')
 
   expect(store.count('User')).toEqual(5)

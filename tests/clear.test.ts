@@ -10,7 +10,7 @@ const store = new Store<TypesMap>({
 afterEach(() => store.reset())
 
 it('should delete all documents in a collection', () => {
-  toCollection(() => store.create('User', userFactory()), 5)
+  toCollection(() => store.add('User', userFactory()), 5)
   expect(store.count('User')).toEqual(5)
 
   store.clear('User')
@@ -18,8 +18,8 @@ it('should delete all documents in a collection', () => {
 })
 
 it('should not affect other collections', () => {
-  toCollection(() => store.create('User', userFactory()), 5)
-  toCollection(() => store.create('Post', postFactory()), 5)
+  toCollection(() => store.add('User', userFactory()), 5)
+  toCollection(() => store.add('Post', postFactory()), 5)
 
   expect(store.count('User')).toEqual(5)
   expect(store.count('Post')).toEqual(5)
@@ -31,7 +31,7 @@ it('should not affect other collections', () => {
 })
 
 it('should not delete relative documents', () => {
-  store.create(
+  store.add(
     'User',
     userFactory({
       posts: toCollection(postFactory, 3),
@@ -48,7 +48,7 @@ it('should not delete relative documents', () => {
 })
 
 it('can clear multiple collections', () => {
-  store.create(
+  store.add(
     'User',
     userFactory({
       profile: userProfileFactory(),
