@@ -86,14 +86,14 @@ export class Store<
         return Object.defineProperty(document, field, {
           value: documentsToRefCollection(
             document[field].map((item: TypesMap[string]) =>
-              this.create(type, item),
+              this.add(type, item),
             ),
           ),
         })
       }
 
       return Object.defineProperty(document, field, {
-        value: documentToRef(this.create(type, document[field])),
+        value: documentToRef(this.add(type, document[field])),
       })
     })
 

@@ -10,8 +10,8 @@ const store = new Store<TypesMap>({
 afterEach(() => store.reset())
 
 it('should retrieve all documents for a type', () => {
-  const users = toCollection(() => store.create('User', userFactory()), 5)
-  const posts = toCollection(() => store.create('Post', postFactory()), 5)
+  const users = toCollection(() => store.add('User', userFactory()), 5)
+  const posts = toCollection(() => store.add('Post', postFactory()), 5)
 
   expect(store.find('User')).toHaveLength(5)
   expect(store.find('User')).toEqual(users)
@@ -29,19 +29,19 @@ it('should return an empty array if no documents exist', () => {
 })
 
 it('can filter documents using a predicate function', () => {
-  toCollection(() => store.create('User', userFactory()), 5)
-  toCollection(() => store.create('Post', postFactory()), 5)
+  toCollection(() => store.add('User', userFactory()), 5)
+  toCollection(() => store.add('Post', postFactory()), 5)
 
   const users = [
-    store.create('User', userFactory({ username: 'john.doe' })),
-    store.create('User', userFactory({ username: 'john.mark' })),
-    store.create('User', userFactory({ username: 'john.luck' })),
+    store.add('User', userFactory({ username: 'john.doe' })),
+    store.add('User', userFactory({ username: 'john.mark' })),
+    store.add('User', userFactory({ username: 'john.luck' })),
   ]
 
   const posts = [
-    store.create('Post', postFactory({ title: 'Javascript: Getting Started' })),
-    store.create('Post', postFactory({ title: 'Javascript: Variables' })),
-    store.create('Post', postFactory({ title: 'Javascript: Conditionals' })),
+    store.add('Post', postFactory({ title: 'Javascript: Getting Started' })),
+    store.add('Post', postFactory({ title: 'Javascript: Variables' })),
+    store.add('Post', postFactory({ title: 'Javascript: Conditionals' })),
   ]
 
   expect(store.find('User')).toHaveLength(8)

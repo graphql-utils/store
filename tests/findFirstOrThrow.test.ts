@@ -9,15 +9,15 @@ const store = new Store<TypesMap>({
 afterEach(() => store.reset())
 
 it('should return the first document', () => {
-  const user = store.create('User', userFactory())
-  store.create('User', userFactory())
-  store.create('User', userFactory())
+  const user = store.add('User', userFactory())
+  store.add('User', userFactory())
+  store.add('User', userFactory())
 
   expect(store.findFirstOrThrow('User')).toEqual(user)
 
-  const post = store.create('Post', postFactory())
-  store.create('Post', postFactory())
-  store.create('Post', postFactory())
+  const post = store.add('Post', postFactory())
+  store.add('Post', postFactory())
+  store.add('Post', postFactory())
 
   expect(store.findFirstOrThrow('Post')).toEqual(post)
 })
@@ -33,17 +33,17 @@ it('should throw error if first user is undefined', () => {
 })
 
 it('can find specific document with a predicate function', () => {
-  store.create('User', userFactory())
-  store.create('User', userFactory())
-  const user = store.create('User', userFactory({ username: 'john.doe' }))
+  store.add('User', userFactory())
+  store.add('User', userFactory())
+  const user = store.add('User', userFactory({ username: 'john.doe' }))
 
   expect(
     store.findFirstOrThrow('User', (user) => user.username === 'john.doe'),
   ).toEqual(user)
 
-  store.create('Post', postFactory())
-  store.create('Post', postFactory())
-  const post = store.create('Post', postFactory({ title: 'Hello World!' }))
+  store.add('Post', postFactory())
+  store.add('Post', postFactory())
+  const post = store.add('Post', postFactory({ title: 'Hello World!' }))
 
   expect(
     store.findFirstOrThrow('Post', (post) => post.title === 'Hello World!'),
