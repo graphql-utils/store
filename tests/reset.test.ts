@@ -1,6 +1,6 @@
 import { Store } from '../src'
 import { schema, TypesMap } from './fixtures'
-import { postFactory, userFactory } from './utils/factories'
+import { postFactory } from './utils/factories'
 import { toCollection } from './utils'
 
 const store = new Store<TypesMap>({
