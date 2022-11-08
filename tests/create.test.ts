@@ -1,6 +1,6 @@
 import { Store } from '../src'
 import { Post, schema, TypesMap, User } from './fixtures'
-import { postFactory, userFactory } from './utils/factories'
+import { postFactory, profileFactory, userFactory } from './utils/factories'
 import { Document } from '../src/types'
 import { getDocumentKey, getDocumentType } from '../src/document'
 import { toCollection } from './utils'
@@ -34,9 +34,41 @@ it('should store document meta data privately', () => {
   const data: User = {
     id: '7c280f0a-c1e7-4982-a008-99d9e1bcbea0',
     username: 'john.doe',
-    posts: [],
+    email: 'john.doe@example.com',
     profile: {
-      fullName: 'John Doe',
+      username: 'john.doe',
+      bio: 'Excepturz.',
+      avatar: {
+        url: 'https://example.com/avatar.png',
+        height: 680,
+        width: 970,
+        size: '226kb',
+      },
+      followers: {
+        count: 0,
+        edges: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+        },
+      },
+      following: {
+        count: 0,
+        edges: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+        },
+      },
+      posts: {
+        count: 0,
+        edges: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+        },
+      },
+      joinedAt: '2022-11-08T15:34:44.339Z',
     },
   }
 
@@ -45,10 +77,42 @@ it('should store document meta data privately', () => {
   expect(user).toEqual(data)
   expect(user).toMatchInlineSnapshot(`
     {
+      "email": "john.doe@example.com",
       "id": "7c280f0a-c1e7-4982-a008-99d9e1bcbea0",
-      "posts": [],
       "profile": {
-        "fullName": "John Doe",
+        "avatar": {
+          "height": 680,
+          "size": "226kb",
+          "url": "https://example.com/avatar.png",
+          "width": 970,
+        },
+        "bio": "Excepturz.",
+        "followers": {
+          "count": 0,
+          "edges": [],
+          "pageInfo": {
+            "hasNextPage": false,
+            "hasPreviousPage": false,
+          },
+        },
+        "following": {
+          "count": 0,
+          "edges": [],
+          "pageInfo": {
+            "hasNextPage": false,
+            "hasPreviousPage": false,
+          },
+        },
+        "joinedAt": "2022-11-08T15:34:44.339Z",
+        "posts": {
+          "count": 0,
+          "edges": [],
+          "pageInfo": {
+            "hasNextPage": false,
+            "hasPreviousPage": false,
+          },
+        },
+        "username": "john.doe",
       },
       "username": "john.doe",
     }
@@ -66,16 +130,35 @@ it('can add new document with `one-to-one` `required` relation', () => {
 
   expect(user.profile).toEqual(data.profile)
   expect(store.findFirstOrThrow('User').profile).toEqual(data.profile)
-  expect(store.findFirstOrThrow('UserProfile')).toEqual(user.profile)
+  expect(store.findFirstOrThrow('Profile')).toEqual(user.profile)
 })
 
-it('can add new document with `one-to-many` relation', () => {
-  const data = userFactory({ posts: toCollection(postFactory, 3) })
-  const user = store.add('User', data)
+it.skip('can add new document with `one-to-many` relation', () => {
+  const data = profileFactory({
+    followers: {
+      count: 2,
+      edges: toCollection(
+        () => ({
+          cursor: 'cursor',
+          node: userFactory(),
+        }),
+        2,
+      ),
+      pageInfo: {
+        hasNextPage: false,
+        hasPreviousPage: false,
+      },
+    },
+  })
+  const profile = store.add('Profile', data)
 
-  expect(user.posts).toEqual(data.posts)
-  expect(store.findFirstOrThrow('User').posts).toEqual(data.posts)
+  expect(profile.followers.edges).toEqual(data.followers.edges)
+  expect(store.findFirstOrThrow('Profile').followers.edges).toEqual(
+    data.followers.edges,
+  )
 
-  expect(store.count('Post')).toEqual(3)
-  expect(store.find('Post')).toEqual(user.posts)
+  expect(store.count('User')).toEqual(2)
+  expect(store.find('User')).toEqual(
+    profile.followers.edges.map(({ node }) => node),
+  )
 })
