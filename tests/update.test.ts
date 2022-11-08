@@ -1,7 +1,7 @@
 import { randUserName } from '@ngneat/falso'
 import { Store } from '../src'
 import { schema, TypesMap } from './fixtures'
-import { userFactory, userProfileFactory } from './utils/factories'
+import { userFactory, profileFactory } from './utils/factories'
 import { Document } from '../src/types'
 import { User } from './fixtures'
 import { getDocumentKey, getDocumentType } from '../src/document'
@@ -38,7 +38,7 @@ it('can update document partially', () => {
 
   const data: Partial<User> = {
     username: randUserName(),
-    profile: userProfileFactory(),
+    profile: profileFactory(),
   }
 
   const updatedUser = store.update(user, data)
