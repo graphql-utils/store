@@ -25,17 +25,19 @@ it('should delete single documents in a collection', () => {
 })
 
 it('should not affect other collections', () => {
-  toCollection(() => store.add('User', userFactory()), 5)
   toCollection(() => store.add('Post', postFactory()), 5)
+  toCollection(() => store.add('User', userFactory()), 5)
   const user = store.findFirstOrThrow('User')
 
-  expect(store.count('User')).toEqual(5)
   expect(store.count('Post')).toEqual(5)
+  expect(store.count('User')).toEqual(10)
+  expect(store.count('Profile')).toEqual(10)
 
   store.delete(user)
 
-  expect(store.count('User')).toEqual(4)
+  expect(store.count('User')).toEqual(9)
   expect(store.count('Post')).toEqual(5)
+  expect(store.count('Profile')).toEqual(10)
   expect(
     store.find('User', (data) => {
       return data.username.startsWith(user.username)

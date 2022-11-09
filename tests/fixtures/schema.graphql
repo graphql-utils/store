@@ -1,27 +1,129 @@
-type Post {
-  id: ID!
-  title: String!
-  body: String!
+scalar DateTime
+scalar Email
+scalar Void
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
 }
 
-type UserProfile {
-  fullName: String!
-  github: String
-  twitter: String
-  website: String
+type Post {
+  id: ID!
+  likes: Int!
+  author: User!
+  likedBy: UserConnection!
+  content: PostContent!
+  createdAt: DateTime!
+  comments(input: CommentInput): CommentConnection!
+}
+
+union PostContent = Text | Image | Video
+
+type PostConnection {
+  count: Int!
+  edges: [PostEdge!]!
+  pageInfo: PageInfo!
+}
+
+type PostEdge {
+  cursor: String!
+  node: Post!
+}
+
+type Comment {
+  id: ID!
+  text: String!
+  author: User!
+  createdAt: DateTime!
+}
+
+type CommentConnection {
+  count: Int!
+  edges: [CommentEdge!]!
+  pageInfo: PageInfo!
+}
+
+type CommentEdge {
+  cursor: String!
+  node: Comment!
+}
+
+type Text {
+  text: String!
+}
+
+type Image {
+  url: String!
+  caption: String
+  size: String!
+  width: Int!
+  height: Int!
+}
+
+type Video {
+  url: String!
+  caption: String
+  duration: Int!
+  mimeType: String!
+}
+
+type Profile {
+  username: String!
+  bio: String
+  avatar: Image
+  followers: UserConnection!
+  following: UserConnection!
+  posts: PostConnection!
+  joinedAt: DateTime!
 }
 
 type User {
   id: ID!
   username: String!
-  profile: UserProfile!
-  posts: [Post]!
+  email: Email!
+  profile: Profile!
+}
+
+type UserConnection {
+  count: Int!
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+}
+
+type UserEdge {
+  cursor: String!
+  node: User!
+}
+
+input CommentInput {
+  pagination: PaginationInput
+  filter: CommentFilterInput
+}
+
+input CommentFilterInput {
+  author: String
+}
+
+input PaginationInput {
+  first: Int
+  last: Int
+  before: String
+  after: String
+}
+
+input CreateUserInput {
+  username: String!
+  email: Email!
+  password: String!
 }
 
 type Query {
-  user(id: ID!): User
+  profile(username: String!): Profile!
 }
 
 type Mutation {
-  createUser(id: ID!): User
+  createUser(input: CreateUserInput!): User!
+  deleteUser(id: ID!): Void!
 }
