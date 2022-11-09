@@ -15,6 +15,10 @@ it('should store immutable documents', () => {
   user.username = randUserName()
 
   expect(store.findFirstOrThrow('User')?.username).not.toEqual(user.username)
+
+  Object.defineProperty(user, 'username', { value: randUserName() })
+
+  expect(store.findFirstOrThrow('User')?.username).not.toEqual(user.username)
 })
 
 it('should not be possible to mutate retrieved document', () => {
