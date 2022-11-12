@@ -90,7 +90,7 @@ export function commentFactory(overrides?: Partial<Comment>): Comment {
   }
 }
 
-function imageFactory(overrides?: Partial<Image>): Image {
+export function imageFactory(overrides?: Partial<Image>): Image {
   return {
     url: randUrl(),
     caption: randText(),

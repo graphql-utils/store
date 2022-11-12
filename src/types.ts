@@ -9,4 +9,4 @@ export type Document<DocumentType> = DocumentType & {
 }
 
 export type PredicateFunction<T> = (data: T) => boolean
-export type Relation = { field: string; type: string }
+export type Relation = { field: string; type: string; isNullable: boolean }
