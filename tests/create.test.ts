@@ -124,15 +124,6 @@ it('should store document meta data privately', () => {
   expect(getDocumentType(user)).toEqual('User')
 })
 
-it('can add new document with `one-to-one` `required` relation', () => {
-  const data = userFactory()
-  const user = store.add('User', data)
-
-  expect(user.profile).toEqual(data.profile)
-  expect(store.findFirstOrThrow('User').profile).toEqual(data.profile)
-  expect(store.findFirstOrThrow('Profile')).toEqual(user.profile)
-})
-
 it.skip('can add new document with `one-to-many` relation', () => {
   const data = profileFactory({
     followers: {
