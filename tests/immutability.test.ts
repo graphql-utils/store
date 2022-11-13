@@ -17,7 +17,6 @@ it('should store immutable documents', () => {
   expect(store.findFirstOrThrow('User')?.username).not.toEqual(user.username)
 
   Object.defineProperty(user, 'username', { value: randUserName() })
-
   expect(store.findFirstOrThrow('User')?.username).not.toEqual(user.username)
 })
 
@@ -29,6 +28,12 @@ it('should not be possible to mutate retrieved document', () => {
   expect(() => (retrieved.username = randUserName())).toThrowError(
     'Documents are immutable.',
   )
+
+  expect(() =>
+    Object.defineProperties(retrieved, {
+      username: { value: randUserName() },
+    }),
+  ).toThrowError('Documents are immutable.')
 })
 
 it('should store immutable documents when updating an existing document', () => {
@@ -40,6 +45,9 @@ it('should store immutable documents when updating an existing document', () => 
 
   data.username = randUserName()
   expect(updatedUser).not.toEqual(data)
+
+  Object.defineProperty(data, 'username', { value: randUserName() })
+  expect(updatedUser).not.toEqual(data)
 })
 
 it('should not be possible to mutate updated document', () => {
@@ -49,4 +57,10 @@ it('should not be possible to mutate updated document', () => {
   expect(() => (updatedUser.username = randUserName())).toThrowError(
     'Documents are immutable.',
   )
+
+  expect(() =>
+    Object.defineProperties(updatedUser, {
+      username: { value: randUserName() },
+    }),
+  ).toThrowError('Documents are immutable.')
 })

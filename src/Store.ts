@@ -114,6 +114,10 @@ export class Store<
         }
       },
 
+      defineProperty() {
+        throw new Error('Documents are immutable.')
+      },
+
       set() {
         throw new Error('Documents are immutable.')
       },
