@@ -81,7 +81,7 @@ export class Store<
       documentKey,
     )
 
-    this.relations(type).forEach(({ field, type }) => {
+    this.relations(type).forEach(({ field, type, isNullable }) => {
       if (Array.isArray(document[field])) {
         return Object.defineProperty(document, field, {
           value: documentsToRefCollection(
@@ -90,6 +90,13 @@ export class Store<
             ),
           ),
         })
+      }
+
+      if (
+        isNullable &&
+        (document[field] === null || document[field] === undefined)
+      ) {
+        return document[field]
       }
 
       return Object.defineProperty(document, field, {

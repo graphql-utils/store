@@ -6,6 +6,7 @@ import {
   GraphQLNamedType,
   GraphQLObjectType,
   GraphQLSchema,
+  isNullableType,
   isObjectType,
   isSchema,
   Kind,
@@ -69,7 +70,11 @@ export function resolveTypeRelations(type: GraphQLObjectType): Array<Relation> {
     if (isRelationField(field)) {
       return [
         ...acc,
-        { field: field.name, type: getNamedType(field.type).name },
+        {
+          field: field.name,
+          type: getNamedType(field.type).name,
+          isNullable: isNullableType(field.type),
+        },
       ]
     }
 

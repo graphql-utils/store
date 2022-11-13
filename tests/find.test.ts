@@ -1,7 +1,7 @@
 import { Store } from '../src'
 import { schema, TypesMap } from './fixtures'
 import { postFactory, userFactory } from './utils/factories'
-import { toCollection } from './utils'
+import { isTextContent, toCollection } from './utils'
 
 const store = new Store<TypesMap>({
   schema,
@@ -13,8 +13,11 @@ it('should retrieve all documents for a type', () => {
   const users = toCollection(() => store.add('User', userFactory()), 5)
   const posts = toCollection(() => store.add('Post', postFactory()), 5)
 
-  expect(store.find('User')).toHaveLength(5)
-  expect(store.find('User')).toEqual(users)
+  expect(store.find('User')).toHaveLength(10)
+  expect(store.find('User')).toEqual([
+    ...users,
+    ...posts.map((post) => post.author),
+  ])
 
   expect(store.find('Post')).toHaveLength(5)
   expect(store.find('Post')).toEqual(posts)
@@ -39,13 +42,22 @@ it('can filter documents using a predicate function', () => {
   ]
 
   const posts = [
-    store.add('Post', postFactory({ title: 'Javascript: Getting Started' })),
-    store.add('Post', postFactory({ title: 'Javascript: Variables' })),
-    store.add('Post', postFactory({ title: 'Javascript: Conditionals' })),
+    store.add(
+      'Post',
+      postFactory({ content: { text: 'Javascript: Getting Started' } }),
+    ),
+    store.add(
+      'Post',
+      postFactory({ content: { text: 'Javascript: Variables' } }),
+    ),
+    store.add(
+      'Post',
+      postFactory({ content: { text: 'Javascript: Conditionals' } }),
+    ),
   ]
 
-  expect(store.find('User')).toHaveLength(8)
-  expect(store.find('Post')).toHaveLength(8)
+  expect(store.count('User')).toEqual(16)
+  expect(store.count('Post')).toEqual(8)
 
   expect(
     store.find('User', (user) => {
@@ -55,7 +67,11 @@ it('can filter documents using a predicate function', () => {
 
   expect(
     store.find('Post', (post) => {
-      return post.title.startsWith('Javascript: ')
+      if (isTextContent(post.content)) {
+        return post.content.text.startsWith('Javascript: ')
+      }
+
+      return false
     }),
   ).toEqual(posts)
 })
