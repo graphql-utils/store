@@ -17,6 +17,7 @@ import {
 } from './document'
 import { Operations } from './Operations'
 import { DocumentCollection } from './DocumentCollection'
+import { proxy } from './proxy'
 
 interface StoreConfiguration {
   schema: Schema
@@ -104,30 +105,20 @@ export class Store<
       })
     })
 
-    return new Proxy(document, {
-      get: (target, prop) => {
-        const field = Reflect.get(document, prop)
+    return proxy(document, (target, prop) => {
+      const field = Reflect.get(target, prop)
 
-        if (isDocumentRefCollection(field)) {
-          return this.resolveDocumentsFromRefCollection(field)
-        }
+      if (isDocumentRefCollection(field)) {
+        return this.resolveDocumentsFromRefCollection(field)
+      }
 
-        if (isDocumentRef(field)) {
-          return this.resolveDocumentFromRef(field)
-        }
+      if (isDocumentRef(field)) {
+        return this.resolveDocumentFromRef(field)
+      }
 
-        if (Reflect.has(document, prop) || typeof prop !== 'string') {
-          return Reflect.get(document, prop)
-        }
-      },
-
-      defineProperty() {
-        throw new Error('Documents are immutable.')
-      },
-
-      set() {
-        throw new Error('Documents are immutable.')
-      },
+      if (Reflect.has(target, prop) || typeof prop !== 'string') {
+        return Reflect.get(target, prop)
+      }
     })
   }
 
