@@ -1,5 +1,6 @@
 import { Store } from '../src'
-import { isDocument } from '../src/document'
+import { getDocumentType, isDocument } from '../src/document'
+import { Document } from '../src/types'
 import { User, schema, TypesMap } from './fixtures'
 
 const store = new Store<TypesMap>({
@@ -8,95 +9,146 @@ const store = new Store<TypesMap>({
 
 afterEach(() => store.reset())
 
-it('should return `true` if the input is document', () => {
-  const data: User = {
-    id: '7c280f0a-c1e7-4982-a008-99d9e1bcbea0',
-    username: 'john.doe',
-    email: 'john.doe@example.com',
-    profile: {
+describe('`isDocument`', () => {
+  it('should return `true` if the input is document', () => {
+    const data: User = {
+      id: '7c280f0a-c1e7-4982-a008-99d9e1bcbea0',
       username: 'john.doe',
-      bio: 'Excepturz.',
-      avatar: {
-        url: 'https://example.com/avatar.png',
-        height: 680,
-        width: 970,
-        size: '226kb',
-      },
-      followers: {
-        count: 0,
-        edges: [],
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
+      email: 'john.doe@example.com',
+      profile: {
+        username: 'john.doe',
+        bio: 'Excepturz.',
+        avatar: {
+          url: 'https://example.com/avatar.png',
+          height: 680,
+          width: 970,
+          size: '226kb',
         },
-      },
-      following: {
-        count: 0,
-        edges: [],
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
+        followers: {
+          count: 0,
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            hasPreviousPage: false,
+          },
         },
-      },
-      posts: {
-        count: 0,
-        edges: [],
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
+        following: {
+          count: 0,
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            hasPreviousPage: false,
+          },
         },
+        posts: {
+          count: 0,
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            hasPreviousPage: false,
+          },
+        },
+        joinedAt: '2022-11-08T15:34:44.339Z',
       },
-      joinedAt: '2022-11-08T15:34:44.339Z',
-    },
-  }
+    }
 
-  store.add('User', data)
-  const user = store.findFirst('User')
+    store.add('User', data)
+    const user = store.findFirst('User')
 
-  expect(isDocument(user)).toEqual(true)
+    expect(isDocument(user)).toEqual(true)
+  })
+
+  it('should return `false` if the input is not a document', () => {
+    const data: User = {
+      id: '7c280f0a-c1e7-4982-a008-99d9e1bcbea0',
+      username: 'john.doe',
+      email: 'john.doe@example.com',
+      profile: {
+        username: 'john.doe',
+        bio: 'Excepturz.',
+        avatar: {
+          url: 'https://example.com/avatar.png',
+          height: 680,
+          width: 970,
+          size: '226kb',
+        },
+        followers: {
+          count: 0,
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            hasPreviousPage: false,
+          },
+        },
+        following: {
+          count: 0,
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            hasPreviousPage: false,
+          },
+        },
+        posts: {
+          count: 0,
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            hasPreviousPage: false,
+          },
+        },
+        joinedAt: '2022-11-08T15:34:44.339Z',
+      },
+    }
+
+    expect(isDocument(data)).toEqual(false)
+  })
 })
-
-it('should return `false` if the input is not a document', () => {
-  const data: User = {
-    id: '7c280f0a-c1e7-4982-a008-99d9e1bcbea0',
-    username: 'john.doe',
-    email: 'john.doe@example.com',
-    profile: {
+describe('`getDocumentType`', () => {
+  it('should get the document type', () => {
+    const data: User = {
+      id: '7c280f0a-c1e7-4982-a008-99d9e1bcbea0',
       username: 'john.doe',
-      bio: 'Excepturz.',
-      avatar: {
-        url: 'https://example.com/avatar.png',
-        height: 680,
-        width: 970,
-        size: '226kb',
-      },
-      followers: {
-        count: 0,
-        edges: [],
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
+      email: 'john.doe@example.com',
+      profile: {
+        username: 'john.doe',
+        bio: 'Excepturz.',
+        avatar: {
+          url: 'https://example.com/avatar.png',
+          height: 680,
+          width: 970,
+          size: '226kb',
         },
-      },
-      following: {
-        count: 0,
-        edges: [],
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
+        followers: {
+          count: 0,
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            hasPreviousPage: false,
+          },
         },
-      },
-      posts: {
-        count: 0,
-        edges: [],
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
+        following: {
+          count: 0,
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            hasPreviousPage: false,
+          },
         },
+        posts: {
+          count: 0,
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            hasPreviousPage: false,
+          },
+        },
+        joinedAt: '2022-11-08T15:34:44.339Z',
       },
-      joinedAt: '2022-11-08T15:34:44.339Z',
-    },
-  }
+    }
 
-  expect(isDocument(data)).toEqual(false)
+    store.add('User', data)
+    const user = store.findFirstOrThrow('User') as Document<User>
+
+    expect(getDocumentType(user)).toEqual('User')
+  })
 })
