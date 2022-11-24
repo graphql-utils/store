@@ -50,8 +50,8 @@
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
-    "@graphql-codegen/cli": "2.13.7",
-    "@graphql-codegen/typescript": "2.8.0",
+    "@graphql-codegen/cli": "2.14.0",
+    "@graphql-codegen/typescript": "2.8.2",
     "@ngneat/falso": "^6.1.0",
     "@rollup/plugin-graphql": "^2.0.1",
     "@types/node": "^18.11.5",
