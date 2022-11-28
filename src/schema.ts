@@ -2,16 +2,20 @@ import {
   buildASTSchema,
   buildSchema,
   getNamedType,
+  getNullableType,
   GraphQLField,
+  GraphQLList,
   GraphQLNamedType,
   GraphQLObjectType,
   GraphQLSchema,
+  GraphQLType,
+  isListType,
   isNullableType,
   isObjectType,
   isSchema,
   Kind,
 } from 'graphql'
-import { Relation, Schema } from './types'
+import { Schema } from './types'
 import { DocumentCollection } from './DocumentCollection'
 
 export function resolveGraphQLSchema(schema: Schema): GraphQLSchema {
@@ -55,7 +59,9 @@ function isInternalTypeName(typeName: string) {
 export function resolveSchemaRelations<
   TypesMap extends Record<string, any>,
   TypeName extends keyof TypesMap = keyof TypesMap,
->(schemaTypes: Array<GraphQLObjectType>): Map<TypeName, Array<Relation>> {
+>(
+  schemaTypes: Array<GraphQLObjectType>,
+): Map<TypeName, Array<OneToOneRelation | OneToManyRelation>> {
   return new Map(
     schemaTypes.map((type) => {
       return [type.name as TypeName, resolveTypeRelations(type)]
@@ -63,18 +69,36 @@ export function resolveSchemaRelations<
   )
 }
 
-export function resolveTypeRelations(type: GraphQLObjectType): Array<Relation> {
+export function resolveTypeRelations(
+  type: GraphQLObjectType,
+): Array<OneToManyRelation | OneToOneRelation> {
   const typeFields = type.getFields()
 
-  return Object.values(typeFields).reduce<Array<Relation>>((acc, field) => {
+  return Object.values(typeFields).reduce<
+    Array<OneToManyRelation | OneToOneRelation>
+  >((acc, field) => {
     if (isRelationField(field)) {
+      if (isListType(getNullableType(field.type))) {
+        return [
+          ...acc,
+          new OneToManyRelation(
+            field.name,
+            getNamedType(field.type).name,
+            isNullableType(field.type),
+            isNullableType(
+              (getNullableType(field.type) as GraphQLList<GraphQLType>).ofType,
+            ),
+          ),
+        ]
+      }
+
       return [
         ...acc,
-        {
-          field: field.name,
-          type: getNamedType(field.type).name,
-          isNullable: isNullableType(field.type),
-        },
+        new OneToOneRelation(
+          field.name,
+          getNamedType(field.type).name,
+          isNullableType(field.type),
+        ),
       ]
     }
 
@@ -98,4 +122,21 @@ export function initializeCollections<
       new DocumentCollection<TypesMap[TypeName]>(),
     ]),
   )
+}
+
+export class OneToOneRelation {
+  constructor(
+    public field: string,
+    public type: string,
+    public isNullable: boolean,
+  ) {}
+}
+
+export class OneToManyRelation {
+  constructor(
+    public field: string,
+    public type: string,
+    public isNullableList: boolean,
+    public hasNullableItems: boolean,
+  ) {}
 }
