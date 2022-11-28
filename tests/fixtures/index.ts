@@ -5,13 +5,14 @@ import type {
   Comment,
   Image,
   Video,
+  Tag,
   Text,
 } from './schema.types'
 
 import schema from './schema.graphql'
 export { schema }
 
-export type { Post, User, Profile, Comment, Text, Image, Video }
+export type { Post, User, Profile, Comment, Text, Image, Video, Tag }
 
 export interface TypesMap {
   User: User
@@ -21,4 +22,5 @@ export interface TypesMap {
   Text: Text
   Image: Image
   Video: Video
+  Tag: Tag
 }
