@@ -1,7 +1,7 @@
-import { Store } from '../src'
-import { schema, TypesMap } from './fixtures'
-import { toCollection } from './utils'
-import { commentFactory, postFactory, userFactory } from './utils/factories'
+import { Store } from '../../../src'
+import { schema, TypesMap } from '../../fixtures'
+import { toCollection } from '../../utils'
+import { commentFactory, postFactory, userFactory } from '../../utils/factories'
 
 const store = new Store<TypesMap>({
   schema,

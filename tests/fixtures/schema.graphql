@@ -16,6 +16,7 @@ type Post {
   likedBy: UserConnection!
   content: PostContent!
   createdAt: DateTime!
+  tags: TagConnection!
   comments(input: CommentInput): CommentConnection!
 }
 
@@ -23,6 +24,7 @@ union PostContent = Text | Image | Video
 
 type PostConnection {
   count: Int!
+  # one-to-many non-nullable list, non-nullable value
   edges: [PostEdge!]!
   pageInfo: PageInfo!
 }
@@ -41,13 +43,33 @@ type Comment {
 
 type CommentConnection {
   count: Int!
-  edges: [CommentEdge!]!
+  # one-to-many nullable list, non-nullable value
+  edges: [CommentEdge!]
   pageInfo: PageInfo!
 }
 
 type CommentEdge {
   cursor: String!
   node: Comment!
+}
+
+type Tag {
+  id: ID!
+  name: String!
+  posts: PostConnection!
+  createAt: DateTime!
+}
+
+type TagConnection {
+  count: Int!
+  # many-to-many nullable list, nullable value
+  edges: [TagEdge]
+  pageInfo: PageInfo!
+}
+
+type TagEdge {
+  cursor: String!
+  node: Tag!
 }
 
 type Text {
@@ -88,7 +110,8 @@ type User {
 
 type UserConnection {
   count: Int!
-  edges: [UserEdge!]!
+  # one-to-many non-nullable list, nullable value
+  edges: [UserEdge]!
   pageInfo: PageInfo!
 }
 

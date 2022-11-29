@@ -1,7 +1,7 @@
 import { randUserName } from '@ngneat/falso'
-import { Store } from '../src'
-import { TypesMap, schema } from './fixtures'
-import { userFactory } from './utils/factories'
+import { Store } from '../../src'
+import { TypesMap, schema } from '../fixtures'
+import { userFactory } from '../utils/factories'
 
 const store = new Store<TypesMap>({
   schema,
