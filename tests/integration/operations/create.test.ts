@@ -1,9 +1,8 @@
-import { Store } from '../src'
-import { Post, schema, TypesMap, User } from './fixtures'
-import { postFactory, profileFactory, userFactory } from './utils/factories'
-import { Document } from '../src/types'
-import { getDocumentKey, getDocumentType } from '../src/document'
-import { toCollection } from './utils'
+import { Store } from '../../../src'
+import { Post, schema, TypesMap, User } from '../../fixtures'
+import { postFactory, userFactory } from '../../utils/factories'
+import { Document } from '../../../src/types'
+import { getDocumentKey, getDocumentType } from '../../../src/document'
 
 const store = new Store<TypesMap>({
   schema,
@@ -122,34 +121,4 @@ it('should store document meta data privately', () => {
   expect(getDocumentKey(user)).toEqual(expect.any(String))
   // @ts-expect-error DOCUMENT_KEY_SYMBOL should be hidden from return type
   expect(getDocumentType(user)).toEqual('User')
-})
-
-it.skip('can add new document with `one-to-many` relation', () => {
-  const data = profileFactory({
-    followers: {
-      count: 2,
-      edges: toCollection(
-        () => ({
-          cursor: 'cursor',
-          node: userFactory(),
-        }),
-        2,
-      ),
-      pageInfo: {
-        hasNextPage: false,
-        hasPreviousPage: false,
-      },
-    },
-  })
-  const profile = store.add('Profile', data)
-
-  expect(profile.followers.edges).toEqual(data.followers.edges)
-  expect(store.findFirstOrThrow('Profile').followers.edges).toEqual(
-    data.followers.edges,
-  )
-
-  expect(store.count('User')).toEqual(2)
-  expect(store.find('User')).toEqual(
-    profile.followers.edges.map(({ node }) => node),
-  )
 })

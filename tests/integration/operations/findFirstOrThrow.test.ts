@@ -1,6 +1,6 @@
-import { Store } from '../src'
-import { schema, TypesMap } from './fixtures'
-import { postFactory, userFactory } from './utils/factories'
+import { Store } from '../../../src'
+import { schema, TypesMap } from '../../fixtures'
+import { postFactory, userFactory } from '../../utils/factories'
 
 const store = new Store<TypesMap>({
   schema,
@@ -13,18 +13,23 @@ it('should return the first document', () => {
   store.add('User', userFactory())
   store.add('User', userFactory())
 
-  expect(store.findFirst('User')).toEqual(user)
+  expect(store.findFirstOrThrow('User')).toEqual(user)
 
   const post = store.add('Post', postFactory())
   store.add('Post', postFactory())
   store.add('Post', postFactory())
 
-  expect(store.findFirst('Post')).toEqual(post)
+  expect(store.findFirstOrThrow('Post')).toEqual(post)
 })
 
-it('should return `undefined` if no user exists', () => {
-  expect(store.findFirst('User')).toBeUndefined()
-  expect(store.findFirst('Post')).toBeUndefined()
+it('should throw error if first user is undefined', () => {
+  expect(() => {
+    store.findFirstOrThrow('User')
+  }).toThrowError('Document not found.')
+
+  expect(() => {
+    store.findFirstOrThrow('Post')
+  }).toThrowError('Document not found.')
 })
 
 it('can find specific document with a predicate function', () => {
@@ -33,7 +38,7 @@ it('can find specific document with a predicate function', () => {
   const user = store.add('User', userFactory({ username: 'john.doe' }))
 
   expect(
-    store.findFirst('User', (user) => user.username === 'john.doe'),
+    store.findFirstOrThrow('User', (user) => user.username === 'john.doe'),
   ).toEqual(user)
 
   store.add('Post', postFactory())
@@ -41,6 +46,6 @@ it('can find specific document with a predicate function', () => {
   const post = store.add('Post', postFactory({ title: 'Hello World!' }))
 
   expect(
-    store.findFirst('Post', (post) => post.title === 'Hello World!'),
+    store.findFirstOrThrow('Post', (post) => post.title === 'Hello World!'),
   ).toEqual(post)
 })

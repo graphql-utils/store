@@ -1,7 +1,8 @@
 import { GraphQLSchema } from 'graphql'
-import { Document, Relation, Schema } from './types'
+import { Document, Schema } from './types'
 import {
   initializeCollections,
+  OneToManyRelation,
   resolveGraphQLSchema,
   resolveSchemaObjectTypes,
   resolveSchemaRelations,
@@ -53,9 +54,7 @@ export class Store<
     return collection as DocumentCollection<TypesMap[Type]>
   }
 
-  protected relations<Type extends keyof TypesMap>(
-    type: Type,
-  ): Array<Relation> {
+  protected relations<Type extends keyof TypesMap>(type: Type) {
     const relations = this._relations.get(type)
 
     if (!relations) {
@@ -82,28 +81,54 @@ export class Store<
       documentKey,
     )
 
-    this.relations(type).forEach(({ field, type, isNullable }) => {
-      if (Array.isArray(document[field])) {
-        return Object.defineProperty(document, field, {
+    for (const relation of this.relations(type)) {
+      if (relation instanceof OneToManyRelation) {
+        if (!relation.isNullableList && !document[relation.field]) {
+          throw new Error('Can not create a non-nullable relation with null')
+        }
+
+        if (relation.isNullableList && document[relation.field] == null) {
+          continue
+        }
+
+        if (
+          !relation.hasNullableItems &&
+          (document[relation.field].includes(null) ||
+            document[relation.field].includes(undefined))
+        ) {
+          throw new Error('Can not create a non-nullable relation with null')
+        }
+
+        if (
+          Array.isArray(document[relation.field]) &&
+          document[relation.field].includes(null)
+        ) {
+          console.warn(`
+          The relation "${relation.field}" of type "${relation.type}" contains null or undefined values.
+          Null values are allowed for this relation type, but we don't store them.
+          So they will be omitted from create document.
+          `)
+        }
+
+        Object.defineProperty(document, relation.field, {
           value: documentsToRefCollection(
-            document[field].map((item: TypesMap[string]) =>
-              this.add(type, item),
-            ),
+            document[relation.field]
+              .filter(Boolean)
+              .map((item: TypesMap[string]) => this.add(relation.type, item)),
+          ),
+        })
+      } else {
+        if (relation.isNullable && document[relation.field] == null) {
+          continue
+        }
+
+        Object.defineProperty(document, relation.field, {
+          value: documentToRef(
+            this.add(relation.type, document[relation.field]),
           ),
         })
       }
-
-      if (
-        isNullable &&
-        (document[field] === null || document[field] === undefined)
-      ) {
-        return document[field]
-      }
-
-      return Object.defineProperty(document, field, {
-        value: documentToRef(this.add(type, document[field])),
-      })
-    })
+    }
 
     return proxy(document, (target, prop) => {
       const field = Reflect.get(target, prop)

@@ -1,4 +1,13 @@
-import { Comment, Post, User, Profile, Image, Text, Video } from '../fixtures'
+import {
+  Comment,
+  Post,
+  User,
+  Profile,
+  Image,
+  Text,
+  Video,
+  Tag,
+} from '../fixtures'
 import {
   randUuid,
   randText,
@@ -23,6 +32,14 @@ export function postFactory(overrides?: Partial<Post>): Post {
     },
     likes: 0,
     likedBy: {
+      count: 0,
+      edges: [],
+      pageInfo: {
+        hasNextPage: false,
+        hasPreviousPage: false,
+      },
+    },
+    tags: {
       count: 0,
       edges: [],
       pageInfo: {
@@ -86,6 +103,23 @@ export function commentFactory(overrides?: Partial<Comment>): Comment {
     author: userFactory(),
     text: randText(),
     createdAt: new Date().toString(),
+    ...overrides,
+  }
+}
+
+export function tagFactory(overrides?: Partial<Tag>): Tag {
+  return {
+    id: randUuid(),
+    name: randText(),
+    posts: {
+      count: 0,
+      edges: [],
+      pageInfo: {
+        hasNextPage: false,
+        hasPreviousPage: false,
+      },
+    },
+    createAt: new Date().toISOString(),
     ...overrides,
   }
 }

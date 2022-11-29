@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import { buildSchema, GraphQLSchema, Kind } from 'graphql'
-import { Store } from '../src'
+import { Store } from '../../src'
 
 const schema = `
   type Post {
