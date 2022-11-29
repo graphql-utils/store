@@ -1,6 +1,6 @@
-import { Store } from '../src'
-import { isDocument } from '../src/document'
-import { User, schema, TypesMap } from './fixtures'
+import { Store } from '../../src'
+import { isDocument } from '../../src/document'
+import { User, schema, TypesMap } from '../fixtures'
 
 const store = new Store<TypesMap>({
   schema,
