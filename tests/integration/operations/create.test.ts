@@ -1,8 +1,8 @@
-import { Store } from '../src'
-import { Post, schema, TypesMap, User } from './fixtures'
-import { postFactory, userFactory } from './utils/factories'
-import { Document } from '../src/types'
-import { getDocumentKey, getDocumentType } from '../src/document'
+import { Store } from '../../../src'
+import { Post, schema, TypesMap, User } from '../../fixtures'
+import { postFactory, userFactory } from '../../utils/factories'
+import { Document } from '../../../src/types'
+import { getDocumentKey, getDocumentType } from '../../../src/document'
 
 const store = new Store<TypesMap>({
   schema,
