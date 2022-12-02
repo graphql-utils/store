@@ -1,9 +1,8 @@
 import { GraphQLSchema } from 'graphql'
-import { Document, Schema } from './types'
+import { Document } from './types'
 import {
   initializeCollections,
   OneToManyRelation,
-  resolveGraphQLSchema,
   resolveSchemaObjectTypes,
   resolveSchemaRelations,
 } from './schema'
@@ -21,7 +20,7 @@ import { DocumentCollection } from './DocumentCollection'
 import { proxy } from './proxy'
 
 interface StoreConfiguration {
-  schema: Schema
+  schema: GraphQLSchema
 }
 
 export class Store<
@@ -32,10 +31,10 @@ export class Store<
 
   protected schema: GraphQLSchema
 
-  constructor(config: StoreConfiguration) {
+  constructor(option: StoreConfiguration) {
     super()
 
-    this.schema = resolveGraphQLSchema(config.schema)
+    this.schema = option.schema
     const schemaObjectTypes = resolveSchemaObjectTypes(this.schema)
 
     this._collections = initializeCollections<TypesMap>(schemaObjectTypes)

@@ -1,12 +1,12 @@
 import { randUserName } from '@ngneat/falso'
-import { Store } from '../../../src'
+import { createStore } from '../../../src'
 import { schema, TypesMap } from '../../fixtures'
 import { userFactory, profileFactory } from '../../utils/factories'
 import { Document } from '../../../src/types'
 import { User } from '../../fixtures'
 import { getDocumentKey, getDocumentType } from '../../../src/document'
 
-const store = new Store<TypesMap>({
+const store = createStore<TypesMap>({
   schema,
 })
 
