@@ -1,6 +1,6 @@
 {
   "name": "@graphql-utils/store",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.1",
   "description": "In-memory data store for writing stateful GraphQL mocks.",
   "author": "Mohammad Ataei",
   "license": "MIT",
