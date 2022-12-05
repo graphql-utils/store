@@ -1,6 +1,6 @@
 {
   "name": "@graphql-utils/store",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "In-memory data store for writing stateful GraphQL mocks.",
   "author": "Mohammad Ataei",
   "license": "MIT",
@@ -35,10 +35,9 @@
     "coverage": "vitest run --coverage",
     "format": "prettier --write . && pnpm lint --fix",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
-    "prepare": "husky install",
+    "prepare": "husky install && pnpm codegen",
     "pre-commit": "lint-staged",
-    "codegen": "graphql-codegen",
-    "postinstall": "pnpm codegen"
+    "codegen": "graphql-codegen"
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": "eslint --fix",

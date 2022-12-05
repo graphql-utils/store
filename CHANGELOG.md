@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-alpha.2](https://github.com/graphql-utils/store/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2022-12-05)
+
+### Bug Fixes
+
+- remove postinstall script to fix installation
+  ([#37](https://github.com/graphql-utils/store/issues/37))
+  ([543f9b6](https://github.com/graphql-utils/store/commit/543f9b6526eafda368d4fd71d73003aaa52e453a))
+
 ## 1.0.0-alpha.1 (2022-12-04)
 
 ### Features
