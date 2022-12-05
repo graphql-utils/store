@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import { buildSchema, GraphQLSchema, Kind } from 'graphql'
-import { Store } from '../../src'
+import { createStore } from '../../src'
 
 const schema = `
   type Post {
@@ -24,24 +24,24 @@ it('should accept `GraphQLSchema` object', () => {
   const graphqlSchema = buildSchema(schema)
 
   expect(graphqlSchema).toBeInstanceOf(GraphQLSchema)
-  expect(() => new Store({ schema: graphqlSchema })).not.toThrowError()
+  expect(() => createStore({ schema: graphqlSchema })).not.toThrowError()
 })
 
 it('should accept `DocumentNode` object', () => {
   const documentNode = gql(schema)
 
   expect(documentNode.kind).toEqual(Kind.DOCUMENT)
-  expect(() => new Store({ schema: documentNode })).not.toThrowError()
+  expect(() => createStore({ schema: documentNode })).not.toThrowError()
 })
 
 it('should accept raw `string` schema', () => {
   expect(schema).toBeTypeOf('string')
-  expect(() => new Store({ schema })).not.toThrowError()
+  expect(() => createStore({ schema })).not.toThrowError()
 })
 
 it('should throw error if invalid schema provided', () => {
   // @ts-expect-error test for invalid schema
-  expect(() => new Store({ schema: 1234 })).toThrowError(
+  expect(() => createStore({ schema: 1234 })).toThrowError(
     /Error: Invalid schema provided./,
   )
 })
