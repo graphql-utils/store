@@ -1,10 +1,10 @@
-import { Store } from '../../src'
+import { createStore } from '../../src'
 import { getDocumentType, isDocument } from '../../src/document'
 import { Document } from '../../src/types'
 import { User, schema, TypesMap } from '../fixtures'
 import { userFactory } from '../utils/factories'
 
-const store = new Store<TypesMap>({
+const store = createStore<TypesMap>({
   schema,
 })
 
