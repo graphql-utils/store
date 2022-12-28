@@ -43,9 +43,9 @@ it('can find specific document with a predicate function', () => {
 
   store.add('Post', postFactory())
   store.add('Post', postFactory())
-  const post = store.add('Post', postFactory({ title: 'Hello World!' }))
+  const post = store.add('Post', postFactory({ likes: 99999 }))
 
   expect(
-    store.findFirstOrThrow('Post', (post) => post.title === 'Hello World!'),
+    store.findFirstOrThrow('Post', (post) => post.likes === 99999),
   ).toEqual(post)
 })
