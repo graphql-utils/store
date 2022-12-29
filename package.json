@@ -30,7 +30,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "unbuild",
+    "build": "tsc && unbuild",
     "test": "vitest --ui --open=false",
     "typecheck": "vitest typecheck",
     "coverage": "vitest run --coverage",
