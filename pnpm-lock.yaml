@@ -19,7 +19,7 @@ specifiers:
   husky: ^8.0.1
   lint-staged: ^13.0.3
   nanoid: ^4.0.0
-  prettier: 2.8.5
+  prettier: 2.8.6
   typescript: ^4.8.4
   unbuild: ^0.9.4
   vite: ^4.0.0
@@ -46,7 +46,7 @@ devDependencies:
   graphql-tag: 2.12.6_graphql@16.6.0
   husky: 8.0.1
   lint-staged: 13.0.3
-  prettier: 2.8.5
+  prettier: 2.8.6
   typescript: 4.8.4
   unbuild: 0.9.4
   vite: 4.0.3_@types+node@18.11.5
@@ -5211,8 +5211,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier/2.8.5:
-    resolution: {integrity: sha512-3gzuxrHbKUePRBB4ZeU08VNkUcqEHaUaouNt0m7LGP4Hti/NuB07C7PPTM/LkWqXoJYJn2McEo5+kxPNrtQkLQ==}
+  /prettier/2.8.6:
+    resolution: {integrity: sha512-mtuzdiBbHwPEgl7NxWlqOkithPyp4VN93V7VeHVWBF+ad3I5avc0RVDT4oImXQy9H/AqxA2NSQH8pSxHW6FYbQ==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
