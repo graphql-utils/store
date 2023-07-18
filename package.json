@@ -52,7 +52,7 @@
     "@commitlint/config-conventional": "^17.1.0",
     "@graphql-codegen/cli": "4.0.0",
     "@graphql-codegen/typescript": "4.0.0",
-    "@ngneat/falso": "^6.1.0",
+    "@ngneat/falso": "^7.0.0",
     "@rollup/plugin-graphql": "^2.0.1",
     "@types/node": "^18.11.5",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
