@@ -143,6 +143,8 @@ export class Store<
       if (Reflect.has(target, prop) || typeof prop !== 'string') {
         return Reflect.get(target, prop)
       }
+
+      return
     })
   }
 

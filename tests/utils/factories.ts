@@ -139,7 +139,7 @@ function videoFactory(overrides?: Partial<Video>): Video {
   return {
     url: randUrl(),
     caption: randText(),
-    duration: randNumber({ min: 100, max: 10 }),
+    duration: randNumber({ min: 10, max: 100 }),
     mimeType: rand(['video/mp4', 'video/avi', 'video/mkv', 'video/webm']),
     ...overrides,
   }
