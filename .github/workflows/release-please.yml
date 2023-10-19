@@ -16,7 +16,7 @@ jobs:
           package-name: '@graphql-utils/store'
           prerelease: true
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         if: ${{ steps.release.outputs.release_created }}
 
       - uses: pnpm/action-setup@v2
