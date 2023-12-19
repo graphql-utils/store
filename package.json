@@ -32,7 +32,7 @@
   "scripts": {
     "build": "tsc && unbuild",
     "test": "vitest --ui --open=false",
-    "typecheck": "vitest typecheck",
+    "typecheck": "vitest --typecheck",
     "coverage": "vitest run --coverage",
     "format": "prettier --write . && pnpm lint --fix",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
