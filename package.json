@@ -74,7 +74,7 @@
   "dependencies": {
     "nanoid": "^5.0.4"
   },
-  "packageManager": "pnpm@8.13.1",
+  "packageManager": "pnpm@8.15.1",
   "engineStrict": true,
   "engines": {
     "node": ">=17"
