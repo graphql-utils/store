@@ -24,7 +24,7 @@ devDependencies:
     version: 4.0.1(graphql@16.8.1)
   '@ngneat/falso':
     specifier: ^7.1.1
-    version: 7.1.1
+    version: 7.2.0
   '@rollup/plugin-graphql':
     specifier: ^2.0.4
     version: 2.0.4(graphql@16.8.1)(rollup@3.29.4)
@@ -1668,8 +1668,8 @@ packages:
     resolution: {integrity: sha512-gbkePEBupNydxCelHCESvFSFM8XPh1Zs/OAVRW/rKpEqPAl5PbOM90Si8mv9bvnR53uPD2s/FiRxdvSejpRJew==}
     dev: true
 
-  /@ngneat/falso@7.1.1:
-    resolution: {integrity: sha512-/5HuJDaZHXl3WVdgvYBAM52OSYbSKfiNazVOZOw/3KjeZ6dQW9F0QCG+W6z52lUu5MZvp/TkPGaVRtoz6h9T1w==}
+  /@ngneat/falso@7.2.0:
+    resolution: {integrity: sha512-283EXBFd05kCbGuGSXgmvhCsQYEYzvD/eJaE7lxd05qRB0tgREvZX7TRlJ1KSp8nHxoK6Ws029G1Y30mt4IVAA==}
     dependencies:
       seedrandom: 3.0.5
       uuid: 8.3.2
